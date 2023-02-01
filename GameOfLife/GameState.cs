@@ -4,31 +4,20 @@ using System;
 
 namespace GameOfLife
 {
-    public enum AvailableActions
-    {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        IncreaseSpeed,
-        DecreaseSpeed,
-        Pause,
-        ClearBoard,
-        FlipValueAtPos,
-        EnterEditMode,
-        ExitEditMode,
-        Save,
-        Load
-    }
 
+    public enum SelectionDirection
+    {
+        Up, Down, Left, Right
+    }
     public partial class GameState
     {
-        private readonly IGameOfLife<bool> _state;
         public (int x, int y) CurrentSelection { get; private set; }
-        public (int width, int height) Size { get; private set; }
-        public bool Paused { get; private set; } = true;
+        public bool Paused { get; set; } = true;
         public bool EditMode { get; private set; } = false;
         public float UpdateRate { get; private set; }
+
+        private readonly IGameOfLife<bool> _state;
+        private (int width, int height) Size;
 
         public GameState((int w, int h) size, float updateRate) : this(size.w, size.h, updateRate)
         {
@@ -54,75 +43,48 @@ namespace GameOfLife
             }
         }
 
-        public void HandleAction(AvailableActions action)
+        public ICellGridIEnumerator<bool> GetCellEnumerator()
         {
-            HandleAction(action, "");
+            return _state.Grid.GetEnumerator();
         }
 
-        public void HandleAction(AvailableActions action, string args)
+        public void Reset()
         {
-            switch (action)
-            {
-                case AvailableActions.MoveUp:
-                case AvailableActions.MoveDown:
-                case AvailableActions.MoveRight:
-                case AvailableActions.MoveLeft:
-                    CurrentSelection = GetNewSelection(action);
-                    break;
-                case AvailableActions.IncreaseSpeed:
-                    UpdateRate /= 2;
-                    break;
-                case AvailableActions.DecreaseSpeed:
-                    UpdateRate *= 2;
-                    break;
-                case AvailableActions.Pause:
-                    Paused = !Paused;
-                    break;
-                case AvailableActions.ClearBoard:
-                    _state.Clear();
-                    break;
-                case AvailableActions.FlipValueAtPos:
-                    bool current = _state.Grid.GetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
-                    _state.Grid.SetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y, !current);
-                    break;
-                case AvailableActions.EnterEditMode:
-                    EditMode = true;
-                    break;
-                case AvailableActions.ExitEditMode:
-                    EditMode = true;
-                    break;
-                case AvailableActions.Save:
-                case AvailableActions.Load:
-                default:
-                    throw new NotImplementedException("Action " + action + "not implemented");
-            }
+            _state.Clear();
+        }
+        public void FlipAtSelection()
+        {
+            bool current = _state.Grid.GetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
+            _state.Grid.SetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y, !current);
         }
 
-        public delegate void ActionForACell(bool cell, int x, int y);
-        public void DoActionForACell(ActionForACell action)
+        public void increaseUpdateRate()
         {
-            ICellGridIEnumerator<bool> enumerator = _state.Grid.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                action(enumerator.Current, (int)enumerator.X, (int)enumerator.Y);
-            };
+            UpdateRate /= 1.5f;
+        }
+        public void decreaseUpdateRate()
+        {
+            UpdateRate *= 1.5f;
         }
 
-
-
-        private (int, int) GetNewSelection(AvailableActions action) => action switch
+        public void MoveCurrentSelection(SelectionDirection direction)
         {
-            AvailableActions.MoveUp when CurrentSelection.y == 0 => (CurrentSelection.x, Size.height - 1),
-            AvailableActions.MoveUp => (CurrentSelection.x, CurrentSelection.y - 1),
+            CurrentSelection = GetNewSelection(direction);
+        }
 
-            AvailableActions.MoveDown when CurrentSelection.y == Size.height - 1 => (CurrentSelection.x, 0),
-            AvailableActions.MoveDown => (CurrentSelection.x, CurrentSelection.y + 1),
+        private (int, int) GetNewSelection(SelectionDirection direction) => direction switch
+        {
+            SelectionDirection.Up when CurrentSelection.y == 0 => (CurrentSelection.x, Size.height - 1),
+            SelectionDirection.Up => (CurrentSelection.x, CurrentSelection.y - 1),
 
-            AvailableActions.MoveRight when CurrentSelection.x == Size.width - 1 => (0, CurrentSelection.y),
-            AvailableActions.MoveRight => (CurrentSelection.x + 1, CurrentSelection.y),
+            SelectionDirection.Down when CurrentSelection.y == Size.height - 1 => (CurrentSelection.x, 0),
+            SelectionDirection.Down => (CurrentSelection.x, CurrentSelection.y + 1),
 
-            AvailableActions.MoveLeft when CurrentSelection.x == 0 => (Size.width - 1, CurrentSelection.y),
-            AvailableActions.MoveLeft => (CurrentSelection.x - 1, CurrentSelection.y),
+            SelectionDirection.Right when CurrentSelection.x == Size.width - 1 => (0, CurrentSelection.y),
+            SelectionDirection.Right => (CurrentSelection.x + 1, CurrentSelection.y),
+
+            SelectionDirection.Left when CurrentSelection.x == 0 => (Size.width - 1, CurrentSelection.y),
+            SelectionDirection.Left => (CurrentSelection.x - 1, CurrentSelection.y),
             _ => CurrentSelection
         };
     }

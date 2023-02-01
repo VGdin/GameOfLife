@@ -11,10 +11,16 @@ namespace GameOfLife
         {
         }
 
-        public (int widht, int height) GameSize { get; private set; } = (256, 256);
-        public (int x, int y, int widht, int height) VisibleGameSize { get; private set; } = (103, 103, 50, 50);
-        public int CellSize { get; private set; } = 20;
-        public int StatusHeight { get; private set; } = 100;
-        public float DefaultUpdateRate { get; private set; } = 0.1f;
+
+        public readonly (int widht, int height) GameSize = (256, 256);
+        public readonly float DefaultUpdateRate = 0.1f;
+
+        /* Camera and Drawing */
+        public readonly (int widht, int height) DefaultResolution = (1000, 1000);
+        public readonly int CellSize = 20;
+        public readonly float DefaultZoom = 1f;
+        public readonly float ZoomMax = 8;
+        public readonly float ZoomMin = 1/8;
+        public readonly float CameraSpeed = 10f;
     }
 }

@@ -9,6 +9,7 @@ namespace GameOfLife
         private GameState _gameState;
         private InputHandler _inputHandler;
         private GameStateDrawer _drawer;
+        private Camera _camera;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -21,13 +22,14 @@ namespace GameOfLife
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = Config.Instance.VisibleGameSize.widht * Config.Instance.CellSize;
-            _graphics.PreferredBackBufferHeight = Config.Instance.VisibleGameSize.height * Config.Instance.CellSize + Config.Instance.StatusHeight;
+            _graphics.PreferredBackBufferWidth = Config.Instance.DefaultResolution.widht;
+            _graphics.PreferredBackBufferHeight = Config.Instance.DefaultResolution.height;
             _graphics.ApplyChanges();
 
             _gameState = new GameState(Config.Instance.GameSize, Config.Instance.DefaultUpdateRate);
-            _inputHandler = new InputHandler(_gameState);
-            _drawer = new GameStateDrawer(_gameState, _inputHandler);
+            _camera= new Camera();
+            _inputHandler = new InputHandler(_gameState, _camera);
+            _drawer = new GameStateDrawer(_gameState);
 
             Window.KeyDown += _inputHandler.HandleInput;
             Window.TextInput += _inputHandler.HandleText;
@@ -51,7 +53,7 @@ namespace GameOfLife
         {
             GraphicsDevice.Clear(Color.White);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred,null,null,null,null,null,_camera.TranslationMatrix);
             _drawer.Draw(_spriteBatch);
             _spriteBatch.End();
 

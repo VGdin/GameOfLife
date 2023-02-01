@@ -101,7 +101,7 @@ namespace GameOfLife
         public delegate void ActionForACell(bool cell, int x, int y);
         public void DoActionForACell(ActionForACell action)
         {
-            ICellGridIterator<bool> enumerator = _state.Grid.GetEnumerator();
+            ICellGridIEnumerator<bool> enumerator = _state.Grid.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 action(enumerator.Current, (int)enumerator.X, (int)enumerator.Y);

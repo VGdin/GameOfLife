@@ -3,13 +3,25 @@ using System.Diagnostics;
 
 namespace GameOfLifeLib
 {
+    /// <summary>
+    /// CellGrid implementation representing a grid as a one dimensional array with Z-order indexing
+    /// </summary>
+    /// <typeparam name="T">Content of a cell</typeparam>
     public partial class CellGridMorton<T> : ICellGrid<T>
     {
+        /// <inheritdoc/>
         public uint Width { get; }
+        /// <inheritdoc/>
         public uint Height { get; }
 
         private T[] _representation;
 
+        /// <summary>
+        /// Create a new grid with given height and width. This implementation is a bit chinky with sizes, so they have to be specif sizes.
+        /// </summary>
+        /// <param name="width">Width of grid, has to be smaller than 60'000 and a power of 2</param>
+        /// <param name="height">Height of grid, has to be smaller than 60'000 and a power of 2</param>
+        /// <exception cref="ArgumentException"></exception>
         public CellGridMorton(uint width, uint height)
         {
             if (width > 60000 || height > 6000)
@@ -25,16 +37,19 @@ namespace GameOfLifeLib
             _representation = new T[Width * Height];
         }
 
+        /// <inheritdoc/>
         public T GetAt(uint x, uint y)
         {
             return _representation[Utils.MortonNumber(x, y)];
         }
 
+        /// <inheritdoc/>
         public void SetAt(uint x, uint y, T value)
         {
             _representation[Utils.MortonNumber(x, y)] = value;
         }
 
+        /// <inheritdoc/>
         public int GetNoActiveNeighbors(uint x, uint y, Predicate<T> test)
         {
             int noNeighborsActive = 0;
@@ -68,9 +83,9 @@ namespace GameOfLifeLib
             return noNeighborsActive;
         }
 
-        ICellGridIterator<T> ICellGridEnumerable<T>.GetEnumerator()
+        ICellGridIEnumerator<T> ICellGridEnumerable<T>.GetEnumerator()
         {
-            return new CellGridMortonIterator<T>(ref _representation, Width, Height);
+            return new CellGridMortonEnumerator<T>(ref _representation, Width, Height);
         }
 
         public IEnumerator<T> GetEnumerator()

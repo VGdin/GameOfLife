@@ -43,6 +43,7 @@
 
         /// <summary>
         /// Calculate a morton number for given coordinates, ie. index in a one dimensional array.
+        /// https://graphics.stanford.edu/~seander/bithacks.html
         /// </summary>
         /// <param name="x">The x coordinates</param>
         /// <param name="y">The y coordinates</param>
@@ -58,6 +59,7 @@
 
         /// <summary>
         /// Checks if a value is a power of 2
+        /// https://graphics.stanford.edu/~seander/bithacks.html
         /// </summary>
         /// <param name="v">Value to check</param>
         /// <returns>True if is a power of 2</returns>

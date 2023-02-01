@@ -1,29 +1,40 @@
 ﻿namespace GameOfLifeLib
 {
+    /// <summary>
+    /// Implementation of GameOfLife that uses bool as the cell type
+    /// </summary>
     public class GameOfLife : IGameOfLife<bool>
     {
 
+        /// <inheritdoc/>>
         public ICellGrid<bool> Grid { get; private set; }
         private ICellGrid<bool> _newGrid;
 
-        public GameOfLife(ICellGrid<bool> grid, ICellGrid<bool> tmpgrid)
+        /// <summary>
+        /// Creates a new GameOfLife with two given CellGrids, switches between who is the main and tmp when taking a new step
+        /// </summary>
+        /// <param name="gridOne">First cell grid</param>
+        /// <param name="gridTwo">Seconds cell grid</param>
+        public GameOfLife(ICellGrid<bool> gridOne, ICellGrid<bool> gridTwo)
         {
-            Grid = grid;
-            _newGrid = tmpgrid;
+            Grid = gridOne;
+            _newGrid = gridTwo;
         }
 
+        /// <inheritdoc/>>
         public void Clear()
         {
-            ICellGridIterator<bool> enumerator = Grid.GetEnumerator();
+            ICellGridIEnumerator<bool> enumerator = Grid.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 Grid.SetAt(enumerator.X, enumerator.Y, false);
             }
         }
 
+        /// <inheritdoc/>>
         public void Step()
         {
-            ICellGridIterator<bool> enumerator = Grid.GetEnumerator();
+            ICellGridIEnumerator<bool> enumerator = Grid.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 int noNeighbors = Grid.GetNoActiveNeighbors(enumerator.X, enumerator.Y, (bool b) => { return b; });

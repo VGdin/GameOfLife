@@ -21,7 +21,7 @@ namespace GameOfLifeLib
         /// </summary>
         /// <param name="width">Width of grid, has to be smaller than 60'000 and a power of 2</param>
         /// <param name="height">Height of grid, has to be smaller than 60'000 and a power of 2</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">On wrong input</exception>
         public CellGridMorton(uint width, uint height)
         {
             if (width > 60000 || height > 6000)

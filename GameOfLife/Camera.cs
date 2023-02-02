@@ -11,17 +11,20 @@ namespace GameOfLife
     {
         ZoomIn, ZoomOut, ZoomMax, ZoomMin
     }
-    public class Camera
+    public sealed class Camera
     {
 
-        public Vector2 Position { get; private set; }
+        public Vector2 Position { get; private set; } = new Vector2(Config.Instance.GameResolution.widht/2, Config.Instance.GameResolution.height/2);
         public float Zoom { get; private set; } = Config.Instance.DefaultZoom;
-
-        public int ViewPortWidth { get; set; }
-        public int ViewPortHeight { get; set; }
+        public int ViewPortWidth { get; set; } = Config.Instance.DefaultResolution.widht;
+        public int ViewPortHeight { get; set; } = Config.Instance.DefaultResolution.height;
         public Vector2 ViewPortCenter => new Vector2(ViewPortWidth /2, ViewPortHeight/2);
 
         public Matrix TranslationMatrix => Matrix.CreateTranslation(- Position.X, -Position.Y,0) * Matrix.CreateScale(Zoom, Zoom,1) * Matrix.CreateTranslation(ViewPortCenter.X, ViewPortCenter.Y,0);
+
+        public Camera()
+        {
+        }
 
         public void ZoomCamera(ZoomActions action)
         {

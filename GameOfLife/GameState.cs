@@ -9,7 +9,7 @@ namespace GameOfLife
     {
         Up, Down, Left, Right
     }
-    public partial class GameState
+    public sealed class GameState
     {
         public (int x, int y) CurrentSelection { get; private set; }
         public bool Paused { get; set; } = true;

@@ -6,7 +6,7 @@ using System;
 
 namespace GameOfLife
 {
-    public class GameStateDrawer
+    public sealed class GameStateDrawer
     {
         private const float _90DEG = (float)Math.PI / 2;
 

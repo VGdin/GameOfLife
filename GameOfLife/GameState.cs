@@ -13,7 +13,6 @@ namespace GameOfLife
     {
         public (int x, int y) CurrentSelection { get; private set; }
         public bool Paused { get; set; } = true;
-        public bool EditMode { get; private set; } = false;
         public float UpdateRate { get; private set; }
 
         private readonly IGameOfLife<bool> _state;

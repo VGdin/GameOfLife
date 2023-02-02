@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace GameOfLife
@@ -65,6 +66,7 @@ namespace GameOfLife
             { "exit", (AvailableActions.ExitEditMode, new Regex(@"^exit\s+$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
         };
 
+        public bool EditMode { get; private set; } = false;
         public string CurrentCommand { get; private set; }
 
         private readonly GameState _gameState;
@@ -78,7 +80,7 @@ namespace GameOfLife
 
         public void HandleInput(object sender, InputKeyEventArgs e)
         {
-            if (_gameState.EditMode)
+            if (EditMode)
             {
                 return;
             }
@@ -92,7 +94,7 @@ namespace GameOfLife
 
         public void HandleText(object sender, TextInputEventArgs e)
         {
-            if (!_gameState.EditMode)
+            if (EditMode)
             {
                 return;
             }
@@ -170,7 +172,11 @@ namespace GameOfLife
                     _camera.ZoomCamera(ZoomActions.ZoomOut);
                     break;
                 case AvailableActions.EnterEditMode:
+                    EditMode= true;
+                    break;
                 case AvailableActions.ExitEditMode:
+                    EditMode= false;
+                    break;
                 case AvailableActions.Save:
                 case AvailableActions.Load:
                 default:

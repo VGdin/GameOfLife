@@ -18,16 +18,12 @@ namespace GameOfLife
         private readonly IGameOfLife<bool> _state;
         private (int width, int height) Size;
 
-        public GameState((int w, int h) size, float updateRate) : this(size.w, size.h, updateRate)
+        public GameState()
         {
-        }
-
-        public GameState(int width, int height, float updateRate)
-        {
-            _state = GameOfLifeFactory.CreateGameOfLife((uint)width, (uint)height);
-            Size = (width, height);
-            CurrentSelection = (width / 2, height / 2);
-            UpdateRate = updateRate;
+            Size = (Config.Instance.GameSize.widht,Config.Instance.GameSize.height);
+            _state = GameOfLifeFactory.CreateGameOfLife((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
+            CurrentSelection = ((int)_state.Grid.Width / 2,(int) _state.Grid.Height / 2);
+            UpdateRate = Config.Instance.DefaultUpdateRate;
         }
 
         private double latestUpdate = 0;

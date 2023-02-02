@@ -6,12 +6,17 @@ namespace GameOfLife
     public class GameOfLife : Microsoft.Xna.Framework.Game
     {
 
+        private readonly GraphicsDeviceManager _graphics;
+
         private GameState _gameState;
         private InputHandler _inputHandler;
-        private GameStateDrawer _drawer;
+        
+        private SpriteBatch _statusSpriteBatch;
+        private StatusDrawer _statusDrawer;
+
+        private SpriteBatch _gameSpriteBatch;
+        private GameStateDrawer _gameStateDrawer;
         private Camera _camera;
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
 
         public GameOfLife()
         {
@@ -28,8 +33,10 @@ namespace GameOfLife
 
             _gameState = new GameState(Config.Instance.GameSize, Config.Instance.DefaultUpdateRate);
             _camera= new Camera();
+            _gameStateDrawer = new GameStateDrawer(_gameState);
             _inputHandler = new InputHandler(_gameState, _camera);
-            _drawer = new GameStateDrawer(_gameState);
+            _statusDrawer = new StatusDrawer(_gameState, _inputHandler);
+
 
             Window.KeyDown += _inputHandler.HandleInput;
             Window.TextInput += _inputHandler.HandleText;
@@ -39,8 +46,10 @@ namespace GameOfLife
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _drawer.LoadContent(Content);
+            _gameSpriteBatch = new SpriteBatch(GraphicsDevice);
+            _statusSpriteBatch = new SpriteBatch(GraphicsDevice);
+            _gameStateDrawer.LoadContent(Content);
+            _statusDrawer.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -53,9 +62,13 @@ namespace GameOfLife
         {
             GraphicsDevice.Clear(Color.White);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred,null,null,null,null,null,_camera.TranslationMatrix);
-            _drawer.Draw(_spriteBatch);
-            _spriteBatch.End();
+            _gameSpriteBatch.Begin(SpriteSortMode.Deferred,null,null,null,null,null,_camera.TranslationMatrix);
+            _gameStateDrawer.Draw(_gameSpriteBatch);
+            _gameSpriteBatch.End();
+
+            _statusSpriteBatch.Begin();
+            _statusDrawer.Draw(_statusSpriteBatch);
+            _statusSpriteBatch.End();
 
             base.Draw(gameTime);
         }

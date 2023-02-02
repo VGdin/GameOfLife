@@ -25,6 +25,13 @@
 /processorParam:TextureFormat=Color
 /build:circle.png
 
+#begin GohuFont.spritefont
+/importer:FontDescriptionImporter
+/processor:LocalizedFontProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:GohuFont.spritefont
+
 #begin line.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -49,10 +56,15 @@
 /processorParam:TextureFormat=Color
 /build:square.png
 
-#begin Text.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
+#begin status.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Text.spritefont
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:status.png
 

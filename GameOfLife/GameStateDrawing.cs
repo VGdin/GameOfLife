@@ -17,9 +17,11 @@ namespace GameOfLife
         private Vector2 _middleOfLine;
 
         private readonly GameState _gameState;
-        public GameStateDrawer(GameState gameState)
+        private readonly Camera _camera;
+        public GameStateDrawer(GameState gameState, Camera camera)
         {
             _gameState = gameState;
+            _camera = camera;
         }
         public void LoadContent(ContentManager content)
         {
@@ -79,6 +81,12 @@ namespace GameOfLife
 
         private void DrawGrid(SpriteBatch spriteBatch)
         {
+            if (Config.Instance.DisableGridAboveZoom 
+                && _camera.Zoom < Config.Instance.ZoomGridThreshold) 
+            {
+                return; 
+            }
+
             int cellSize = Config.Instance.CellSize;
             int cellSizeHalf = cellSize / 2;
 

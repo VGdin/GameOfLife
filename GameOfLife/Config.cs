@@ -24,6 +24,8 @@ namespace GameOfLife
         public readonly float ZoomGridThreshold =(float) 1/2;
         public readonly float CameraSpeed = 10f;
 
+        public readonly bool DisableGridAboveZoom = true;
+
         /*  Derived */
         public (int widht, int height) GameResolution => (GameSize.widht * CellSize, GameSize.height * CellSize);
         public (int x, int y, int widht, int height) StatusDimensions => (0, DefaultResolution.height - 100, DefaultResolution.widht, 100);

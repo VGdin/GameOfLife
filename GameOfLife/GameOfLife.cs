@@ -33,7 +33,7 @@ namespace GameOfLife
 
             _gameState = new GameState(Config.Instance.GameSize, Config.Instance.DefaultUpdateRate);
             _camera= new Camera();
-            _gameStateDrawer = new GameStateDrawer(_gameState);
+            _gameStateDrawer = new GameStateDrawer(_gameState, _camera);
             _inputHandler = new InputHandler(_gameState, _camera);
             _statusDrawer = new StatusDrawer(_gameState, _inputHandler);
 

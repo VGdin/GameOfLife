@@ -57,13 +57,21 @@ namespace GameOfLife
             _state.Grid.SetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y, !current);
         }
 
-        public void increaseUpdateRate()
+        public void IncreaseUpdateRate()
         {
             UpdateRate /= 1.5f;
         }
-        public void decreaseUpdateRate()
+        public void DecreaseUpdateRate()
         {
             UpdateRate *= 1.5f;
+        }
+
+        public void MoveCurrentSelectionTo((int x, int y) newSelection)
+        {
+            if (WithinBounds(newSelection))
+            {
+                CurrentSelection = newSelection;
+            }
         }
 
         public void MoveCurrentSelection(SelectionDirection direction)
@@ -86,5 +94,10 @@ namespace GameOfLife
             SelectionDirection.Left => (CurrentSelection.x - 1, CurrentSelection.y),
             _ => CurrentSelection
         };
+
+        private bool WithinBounds((int x,int y) pos)
+        {
+            return (pos.x >= 0 && pos.y >= 0 && pos.x < _state.Grid.Width && pos.y < _state.Grid.Height);
+        }
     }
 }

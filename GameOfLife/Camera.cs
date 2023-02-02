@@ -52,6 +52,12 @@ namespace GameOfLife
             };
         }
 
+        public void MoveCameraTo(Vector2 newPosition)
+        {
+            _isDirty = true;
+            Position = newPosition;
+        }
+
         public void MoveCamera(CameraDirections direction)
         {
             _isDirty = true;

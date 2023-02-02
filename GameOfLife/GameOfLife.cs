@@ -38,8 +38,8 @@ namespace GameOfLife
             _statusDrawer = new StatusDrawer(_gameState, _inputHandler);
 
 
-            Window.KeyDown += _inputHandler.HandleInput;
             Window.TextInput += _inputHandler.HandleText;
+            Window.KeyDown += _inputHandler.HandleInput;
 
             base.Initialize();
         }

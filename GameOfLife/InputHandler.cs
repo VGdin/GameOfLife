@@ -13,21 +13,30 @@ namespace GameOfLife
     {
         public enum AvailableActions
         {
+            /* Selection Controls */
             SelectionMoveUp,
             SelectionMoveDown,
             SelectionMoveLeft,
             SelectionMoveRight,
+            SelectionMoveTo,
+
+            /* Camera Movement */
             CameraMoveUp,
             CameraMoveDown,
             CameraMoveLeft,
             CameraMoveRight,
+            CameraMoveTo,
             CameraZoomIn,
             CameraZoomOut,
+
+            /* Came Controls */
             IncreaseSpeed,
             DecreaseSpeed,
             Pause,
             ClearBoard,
             FlipValueAtPos,
+
+            /* MISC */
             EnterEditMode,
             ExitEditMode,
             Save,
@@ -55,7 +64,7 @@ namespace GameOfLife
             { Keys.U,  AvailableActions.CameraZoomOut},
 
             /* MISC */
-            { Keys.E,  AvailableActions.EnterEditMode},
+            { Keys.OemPeriod,  AvailableActions.EnterEditMode},
             { Keys.P,  AvailableActions.Pause},
             { Keys.C,  AvailableActions.ClearBoard},
             { Keys.Space,  AvailableActions.FlipValueAtPos}
@@ -63,12 +72,16 @@ namespace GameOfLife
 
         private static readonly Dictionary<string, (AvailableActions, Regex)> _commandMap = new Dictionary<string, (AvailableActions, Regex)>()
         {
-            { "exit", (AvailableActions.ExitEditMode, new Regex(@"^exit\s+$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "EXIT", (AvailableActions.ExitEditMode, new Regex(@"^(EXIT)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "CLEAR", (AvailableActions.ClearBoard, new Regex(@"^(CLEAR)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "CENTER", (AvailableActions.CameraMoveTo, new Regex(@"^(CENTER)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "GOTO", (AvailableActions.SelectionMoveTo, new Regex(@"^(GOTO)\s+(\d+)\s+(\d+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
         };
 
         public bool EditMode { get; private set; } = false;
-        public string CurrentCommand { get; private set; }
+        public string CurrentCommand { get; private set; } = "";
 
+        private Object inputLock = new Object();
         private readonly GameState _gameState;
         private readonly Camera _camera;
 
@@ -80,49 +93,70 @@ namespace GameOfLife
 
         public void HandleInput(object sender, InputKeyEventArgs e)
         {
-            if (EditMode)
+            lock (inputLock)
             {
-                return;
-            }
+                if (EditMode)
+                {
+                    return;
+                }
 
-            AvailableActions action;
-            if (_keyMap.TryGetValue(e.Key, out action))
-            {
-                HandleAction(action);
+                AvailableActions action;
+                if (_keyMap.TryGetValue(e.Key, out action))
+                {
+                    HandleAction(action);
+                }
             }
         }
 
         public void HandleText(object sender, TextInputEventArgs e)
         {
-            if (EditMode)
+            lock (inputLock)
             {
-                return;
-            }
-            switch (e.Key)
-            {
-                case Keys.Enter:
-                    string firstWord = CurrentCommand.Split(" ")[0];
-                    (AvailableActions action, Regex regex) command;
-                    if (_commandMap.TryGetValue(firstWord, out command))
-                    {
-                        HandleAction(command.action, CurrentCommand.Substring(firstWord.Length, CurrentCommand.Length));
-                    }
-                    break;
-                default:
-                    if (Char.IsAsciiLetterOrDigit(e.Character))
-                    {
-                        CurrentCommand += e.Character;
-                    }
-                    break;
+                if (!EditMode)
+                {
+                    return;
+                }
+                switch (e.Key)
+                {
+                    case Keys.Back:
+                            CurrentCommand = CurrentCommand.Length == 0 ? "" : CurrentCommand.Substring(0,CurrentCommand.Length - 1);
+                        break;
+                    case Keys.Escape:
+                        HandleAction(AvailableActions.ExitEditMode);
+                        break;
+                    case Keys.Enter:
+                        string firstWord = CurrentCommand.ToUpper().Split(" ")[0];
+                        (AvailableActions action, Regex regex) command;
+                        if (_commandMap.TryGetValue(firstWord, out command))
+                        {
+                            Match match = command.regex.Match(CurrentCommand);
+                            if (match.Success)
+                            {
+                                HandleAction(command.action, match.Groups);
+                            }
+                        }
+                        else
+                        {
+                            //TODO: Tellback
+                        }
+                        CurrentCommand = "";
+                        break;
+                    default:
+                        if (Char.IsAsciiLetterOrDigit(e.Character) || Char.IsSeparator(e.Character))
+                        {
+                            CurrentCommand += e.Character;
+                        }
+                        break;
+                }
             }
         }
 
         public void HandleAction(AvailableActions action)
         {
-            HandleAction(action, "");
+            HandleAction(action, null);
         }
 
-        private void HandleAction(AvailableActions action, string args)
+        private void HandleAction(AvailableActions action, GroupCollection args)
         {
             switch (action)
             {
@@ -138,11 +172,14 @@ namespace GameOfLife
                 case AvailableActions.SelectionMoveLeft:
                     _gameState.MoveCurrentSelection(SelectionDirection.Left);
                     break;
+                case AvailableActions.SelectionMoveTo when args != null:
+                    _gameState.MoveCurrentSelectionTo((Convert.ToInt32(args[2].Value), (Convert.ToInt32(args[3].Value))));
+                    break;
                 case AvailableActions.IncreaseSpeed:
-                    _gameState.increaseUpdateRate();
+                    _gameState.IncreaseUpdateRate();
                     break;
                 case AvailableActions.DecreaseSpeed:
-                    _gameState.decreaseUpdateRate();
+                    _gameState.DecreaseUpdateRate();
                     break;
                 case AvailableActions.Pause:
                     _gameState.Paused = !_gameState.Paused;
@@ -165,6 +202,9 @@ namespace GameOfLife
                 case AvailableActions.CameraMoveLeft:
                     _camera.MoveCamera(CameraDirections.Left);
                     break;
+                case AvailableActions.CameraMoveTo:
+                    _camera.MoveCameraTo(Util.TupleToVector2(_gameState.CurrentSelection));
+                    break;
                 case AvailableActions.CameraZoomIn:
                     _camera.ZoomCamera(ZoomActions.ZoomIn);
                     break;
@@ -172,13 +212,13 @@ namespace GameOfLife
                     _camera.ZoomCamera(ZoomActions.ZoomOut);
                     break;
                 case AvailableActions.EnterEditMode:
-                    EditMode= true;
+                    EditMode = true;
                     break;
                 case AvailableActions.ExitEditMode:
-                    EditMode= false;
+                    EditMode = false;
                     break;
-                case AvailableActions.Save:
-                case AvailableActions.Load:
+                case AvailableActions.Save: //TODO:
+                case AvailableActions.Load: //TODO:
                 default:
                     throw new NotImplementedException("Action " + action + "not implemented");
             }

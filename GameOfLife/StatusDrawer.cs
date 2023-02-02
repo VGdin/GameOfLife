@@ -1,5 +1,4 @@
-﻿using GameOfLifeLib;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -36,7 +35,7 @@ namespace GameOfLife
 
             spriteBatch.DrawString(_text,
                 String.Format("{0,6} | {1,6} | {2,14} | {3,14} |" +
-                "\n{4,32}",
+                "\n{4,-64}",
                 paused, updateRate, size, selection, command),
                 new Vector2(statusDimensions.x + 10, statusDimensions.y + 10), Color.Black);
         }

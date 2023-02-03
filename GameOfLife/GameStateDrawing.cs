@@ -60,22 +60,18 @@ namespace GameOfLife
         {
             int cellSize = Config.Instance.CellSize;
             int drawSize = Config.Instance.CellSize - _lineTexture.Width * 2;
-            ICellGridIEnumerator enumerator = _gameState.GetCellEnumerator();
-            while (enumerator.MoveNext())
+            foreach ((int x, int y) pos in _gameState.getAllActiveCells())
             {
-                if (enumerator.Current)
-                {
-                    int x_pos = cellSize * (int)enumerator.X + _lineTexture.Width;
-                    int y_pos = cellSize * (int)enumerator.Y + _lineTexture.Width;
-                    spriteBatch.Draw(_cellTexture,
-                        new Rectangle(x_pos, y_pos, drawSize, drawSize),
-                        null,
-                        Color.Black,
-                        0,
-                        new Vector2(0, 0),
-                        SpriteEffects.None,
-                        0);
-                }
+                int x_pos = cellSize * pos.x + _lineTexture.Width;
+                int y_pos = cellSize * pos.y + _lineTexture.Width;
+                spriteBatch.Draw(_cellTexture,
+                    new Rectangle(x_pos, y_pos, drawSize, drawSize),
+                    null,
+                    Color.Black,
+                    0,
+                    new Vector2(0, 0),
+                    SpriteEffects.None,
+                    0);
             }
         }
 

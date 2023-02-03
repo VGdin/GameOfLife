@@ -20,9 +20,9 @@ namespace GameOfLife
 
         public GameState()
         {
-            Size = (Config.Instance.GameSize.widht, Config.Instance.GameSize.height);
-            _state = GameOfLifeFactory.CreateGameOfLife((uint)Config.Instance.GameSize.widht, (uint)Config.Instance.GameSize.height);
-            CurrentSelection = ((int)_state.Grid.Width / 2, (int)_state.Grid.Height / 2);
+            Size = (Config.Instance.GameSize.widht,Config.Instance.GameSize.height);
+            _state = GameOfLifeFactory.CreateGameOfLifeMorton((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
+            CurrentSelection = ((int)_state.Grid.Width / 2,(int) _state.Grid.Height / 2);
             UpdateRate = Config.Instance.DefaultUpdateRate;
         }
 
@@ -36,11 +36,6 @@ namespace GameOfLife
                 latestUpdate = 0;
                 _state.Step();
             }
-        }
-
-        public ICellGridIEnumerator GetCellEnumerator()
-        {
-            return _state.Grid.GetEnumerator();
         }
 
         public void Reset()
@@ -67,6 +62,11 @@ namespace GameOfLife
         public void DecreaseUpdateRate()
         {
             UpdateRate *= 1.5f;
+        }
+
+        public (int x, int y)[] getAllActiveCells()
+        {
+            return _state.Grid.getAllActive();
         }
 
         public void MoveCurrentSelectionTo((int x, int y) newSelection)

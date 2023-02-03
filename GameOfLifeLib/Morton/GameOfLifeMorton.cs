@@ -1,9 +1,12 @@
-﻿namespace GameOfLifeLib
+﻿namespace GameOfLifeLib.Morton
 {
     /// <summary>
     /// Implementation of GameOfLife that uses bool as the cell type
     /// </summary>
-    public class GameOfLife : IGameOfLife {
+    public class GameOfLifeMorton : IGameOfLife
+    {
+
+        /// <inheritdoc/>>
         public ICellGrid Grid { get; private set; }
         private ICellGrid _newGrid;
 
@@ -12,7 +15,7 @@
         /// </summary>
         /// <param name="gridOne">First cell grid</param>
         /// <param name="gridTwo">Seconds cell grid</param>
-        public GameOfLife(ICellGrid gridOne, ICellGrid gridTwo)
+        public GameOfLifeMorton(ICellGrid gridOne, ICellGrid gridTwo)
         {
             Grid = gridOne;
             _newGrid = gridTwo;
@@ -21,27 +24,31 @@
         /// <inheritdoc/>>
         public void Clear()
         {
-            ICellGridIEnumerator enumerator = Grid.GetEnumerator();
-            while (enumerator.MoveNext())
+            for (uint x = 0; x < Grid.Width; x++)
             {
-                Grid.ClearAt(enumerator.X, enumerator.Y);
+                for (uint y = 0; y < Grid.Height; y++)
+                {
+                    Grid.ClearAt(x,y);
+                }
             }
         }
 
         /// <inheritdoc/>>
         public void Step()
         {
-            ICellGridIEnumerator enumerator = Grid.GetEnumerator();
-            while (enumerator.MoveNext())
+            for (uint x = 0; x < Grid.Width; x++)
             {
-                int noNeighbors = Grid.GetNoActiveNeighbors(enumerator.X, enumerator.Y, (bool b) => { return b; });
-                if (newValue(noNeighbors, enumerator.Current))
+                for (uint y = 0; y < Grid.Height; y++)
                 {
-                    _newGrid.SetAt(enumerator.X, enumerator.Y);
-                }
-                else
-                {
-                    _newGrid.ClearAt(enumerator.X, enumerator.Y);
+                    int noNeighbors = Grid.GetNoActiveNeighbors(x,y, (b) => { return b; });
+                    if (newValue(noNeighbors,Grid.GetAt(x,y)))
+                    {
+                        _newGrid.SetAt(x, y);
+                    }
+                    else
+                    {
+                        _newGrid.ClearAt(x,y);
+                    }
                 }
             }
 

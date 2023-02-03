@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 
-namespace GameOfLifeLib
+namespace GameOfLifeLib.Morton
 {
     /// <summary>
     /// CellGrid implementation representing a grid as a one dimensional array with Z-order indexing
     /// </summary>
+    /// <typeparam name="T">Content of a cell</typeparam>
     public partial class CellGridMorton : ICellGrid
     {
         /// <inheritdoc/>
@@ -25,10 +26,11 @@ namespace GameOfLifeLib
         {
             if (width > 60000 || height > 6000)
             {
-                throw new ArgumentException(String.Format("Size, width({0}) and height({1}), can't be larger than 6'000", width, height));
-            } else if (!Utils.isPowerOf2(width) || !Utils.isPowerOf2(height) )
+                throw new ArgumentException(string.Format("Size, width({0}) and height({1}), can't be larger than 6'000", width, height));
+            }
+            else if (!Utils.isPowerOf2(width) || !Utils.isPowerOf2(height))
             {
-                throw new ArgumentException(String.Format("Size, width({0}) and height({1}), must be a power of 2, eg. 2,4,8...", width, height));
+                throw new ArgumentException(string.Format("Size, width({0}) and height({1}), must be a power of 2, eg. 2,4,8...", width, height));
             }
 
             Width = width;
@@ -88,19 +90,9 @@ namespace GameOfLifeLib
             return noNeighborsActive;
         }
 
-        ICellGridIEnumerator ICellGridEnumerable.GetEnumerator()
+        public (int x, int y)[] getAllActive()
         {
-            return new CellGridMortonEnumerator(ref _representation, Width, Height);
-        }
-
-        public IEnumerator<bool> GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            throw new NotImplementedException();
         }
     }
 }

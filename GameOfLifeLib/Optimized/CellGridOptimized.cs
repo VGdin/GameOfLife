@@ -44,7 +44,7 @@ namespace GameOfLifeLib.Optimized
             //_representation[(y + 1) * Width + x + 1] = false;
         }
 
-        public int GetNoActiveNeighbors(uint x, uint y, Predicate<bool> test)
+        public int GetNoActiveNeighbors(uint x, uint y)
         {
             throw new NotImplementedException();
         }

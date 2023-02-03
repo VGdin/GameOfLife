@@ -42,15 +42,5 @@
         /// </summary>
         /// <returns>Array with coordinates</returns>
         (int x, int y)[] getAllActive();
-
-
-        /// <summary>
-        /// Given a predicate, return how many neighbors return true
-        /// </summary>
-        /// <param name="x">The x coordinate</param>
-        /// <param name="y">The y coordinate</param>
-        /// <param name="test">Test of the content of cell</param>
-        /// <returns></returns>
-        int GetNoActiveNeighbors(uint x, uint y, Predicate<bool> test);
     }
 }

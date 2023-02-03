@@ -57,34 +57,34 @@ namespace GameOfLifeLib.Morton
         }
 
         /// <inheritdoc/>
-        public int GetNoActiveNeighbors(uint x, uint y, Predicate<bool> test)
+        public int GetNoActiveNeighbors(uint x, uint y)
         {
             int noNeighborsActive = 0;
             if (x == 0 || y == 0 || !(x < Width - 1) || !(y < Height - 1))
             {
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y == 0 ? Height - 1 : y - 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x, y == 0 ? Height - 1 : y - 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y == 0 ? Height - 1 : y - 1)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y == 0 ? Height - 1 : y - 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x, y == 0 ? Height - 1 : y - 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y == 0 ? Height - 1 : y - 1)] ? 1 : 0;
 
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y)] ? 1 : 0;
 
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y == Height - 1 ? 0 : y + 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x, y == Height - 1 ? 0 : y + 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y == Height - 1 ? 0 : y + 1)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == 0 ? Width - 1 : x - 1, y == Height - 1 ? 0 : y + 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x, y == Height - 1 ? 0 : y + 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x == Width - 1 ? 0 : x + 1, y == Height - 1 ? 0 : y + 1)] ? 1 : 0;
             }
             else
             {
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x - 1, y - 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x, y - 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x + 1, y - 1)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x - 1, y - 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x, y - 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x + 1, y - 1)] ? 1 : 0;
 
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x - 1, y)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x + 1, y)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x - 1, y)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x + 1, y)] ? 1 : 0;
 
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x - 1, y + 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x, y + 1)]) ? 1 : 0;
-                noNeighborsActive += test(_representation[Utils.MortonNumber(x + 1, y + 1)]) ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x - 1, y + 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x, y + 1)] ? 1 : 0;
+                noNeighborsActive += _representation[Utils.MortonNumber(x + 1, y + 1)] ? 1 : 0;
             }
 
             return noNeighborsActive;

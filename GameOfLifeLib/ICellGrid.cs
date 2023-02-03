@@ -3,8 +3,7 @@
     /// <summary>
     /// Class to hold a implementation of a 2D grid
     /// </summary>
-    /// <typeparam name="T">Content of a cell</typeparam>
-    public interface ICellGrid<T> :  ICellGridEnumerable<T>
+    public interface ICellGrid :  ICellGridEnumerable
     {
         /// <summary>
         /// Width of the grid
@@ -22,15 +21,21 @@
         /// <param name="x">The x coordinate</param>
         /// <param name="y">The y coordinate</param>
         /// <returns></returns>
-        T GetAt(uint x, uint y);
+        bool GetAt(uint x, uint y);
 
         /// <summary>
-        /// Replace the value at coordinates with the new, given, value
+        /// Marks cell at coordinates as alive
         /// </summary>
         /// <param name="x">The x coordinate</param>
         /// <param name="y">The y coordinate</param>
-        /// <param name="value">New given value</param>
-        void SetAt(uint x, uint y, T value);
+        void SetAt(uint x, uint y);
+
+        /// <summary>
+        /// Marks cell at coordinates as dead
+        /// </summary>
+        /// <param name="x">The x coordinate</param>
+        /// <param name="y">The y coordinate</param>
+        void ClearAt(uint x, uint y);
 
         /// <summary>
         /// Given a predicate, return how many neighbors return true
@@ -39,6 +44,6 @@
         /// <param name="y">The y coordinate</param>
         /// <param name="test">Test of the content of cell</param>
         /// <returns></returns>
-        int GetNoActiveNeighbors(uint x, uint y, Predicate<T> test);
+        int GetNoActiveNeighbors(uint x, uint y, Predicate<bool> test);
     }
 }

@@ -5,21 +5,20 @@ namespace GameOfLifeLib
     /// <summary>
     /// Enumerator over a CellGrid using z-order indexing
     /// </summary>
-    /// <typeparam name="T">Content of a cell</typeparam>
-    public class CellGridMortonEnumerator<T> : ICellGridIEnumerator<T>
+    public class CellGridMortonEnumerator : ICellGridIEnumerator
     {
-        private readonly T[] _representation;
+        private readonly bool[] _representation;
         private readonly uint _w;
         private readonly uint _h;
 
-        private T Current => _representation[Utils.MortonNumber(X, Y)];
+        private bool Current => _representation[Utils.MortonNumber(X, Y)];
         private bool started;
 
         /// <inheritdoc/>
         object IEnumerator.Current => Current;
 
         /// <inheritdoc/>
-        T IEnumerator<T>.Current => Current;
+        bool IEnumerator<bool>.Current => Current;
 
         /// <inheritdoc/>
         public uint X { get; private set; }
@@ -34,7 +33,7 @@ namespace GameOfLifeLib
         /// <param name="w">Width of Cell Grid</param>
         /// <param name="h">Height of Cell Grid</param>
         /// <exception cref="ArgumentException">On wrong input</exception>
-        public CellGridMortonEnumerator(ref T[] representation, uint w, uint h)
+        public CellGridMortonEnumerator(ref bool[] representation, uint w, uint h)
         {
             if (w * h != representation.Length)
             {

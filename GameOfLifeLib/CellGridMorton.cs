@@ -6,15 +6,14 @@ namespace GameOfLifeLib
     /// <summary>
     /// CellGrid implementation representing a grid as a one dimensional array with Z-order indexing
     /// </summary>
-    /// <typeparam name="T">Content of a cell</typeparam>
-    public partial class CellGridMorton<T> : ICellGrid<T>
+    public partial class CellGridMorton : ICellGrid
     {
         /// <inheritdoc/>
         public uint Width { get; }
         /// <inheritdoc/>
         public uint Height { get; }
 
-        private T[] _representation;
+        private bool[] _representation;
 
         /// <summary>
         /// Create a new grid with given height and width. This implementation is a bit chinky with sizes, so they have to be specif sizes.
@@ -34,23 +33,29 @@ namespace GameOfLifeLib
 
             Width = width;
             Height = height;
-            _representation = new T[Width * Height];
+            _representation = new bool[Width * Height];
         }
 
         /// <inheritdoc/>
-        public T GetAt(uint x, uint y)
+        public bool GetAt(uint x, uint y)
         {
             return _representation[Utils.MortonNumber(x, y)];
         }
 
         /// <inheritdoc/>
-        public void SetAt(uint x, uint y, T value)
+        public void SetAt(uint x, uint y)
         {
-            _representation[Utils.MortonNumber(x, y)] = value;
+            _representation[Utils.MortonNumber(x, y)] = true;
         }
 
         /// <inheritdoc/>
-        public int GetNoActiveNeighbors(uint x, uint y, Predicate<T> test)
+        public void ClearAt(uint x, uint y)
+        {
+            _representation[Utils.MortonNumber(x, y)] = false;
+        }
+
+        /// <inheritdoc/>
+        public int GetNoActiveNeighbors(uint x, uint y, Predicate<bool> test)
         {
             int noNeighborsActive = 0;
             if (x == 0 || y == 0 || !(x < Width - 1) || !(y < Height - 1))
@@ -83,12 +88,12 @@ namespace GameOfLifeLib
             return noNeighborsActive;
         }
 
-        ICellGridIEnumerator<T> ICellGridEnumerable<T>.GetEnumerator()
+        ICellGridIEnumerator ICellGridEnumerable.GetEnumerator()
         {
-            return new CellGridMortonEnumerator<T>(ref _representation, Width, Height);
+            return new CellGridMortonEnumerator(ref _representation, Width, Height);
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<bool> GetEnumerator()
         {
             return GetEnumerator();
         }

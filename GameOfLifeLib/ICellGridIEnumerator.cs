@@ -3,8 +3,7 @@
     /// <summary>
     /// Extended enumerator to show the corresponding X and Y coordinates for the current element
     /// </summary>
-    /// <typeparam name="T">Content of a Cell in a CellGrid</typeparam>
-    public interface ICellGridIEnumerator<T> : IEnumerator<T>
+    public interface ICellGridIEnumerator : IEnumerator<bool>
     {
         /// <summary>
         /// X coordinate of current element

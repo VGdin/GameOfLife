@@ -15,14 +15,14 @@ namespace GameOfLife
         public bool Paused { get; set; } = true;
         public float UpdateRate { get; private set; }
 
-        private readonly IGameOfLife<bool> _state;
+        private readonly IGameOfLife _state;
         private (int width, int height) Size;
 
         public GameState()
         {
-            Size = (Config.Instance.GameSize.widht,Config.Instance.GameSize.height);
-            _state = GameOfLifeFactory.CreateGameOfLife((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
-            CurrentSelection = ((int)_state.Grid.Width / 2,(int) _state.Grid.Height / 2);
+            Size = (Config.Instance.GameSize.widht, Config.Instance.GameSize.height);
+            _state = GameOfLifeFactory.CreateGameOfLife((uint)Config.Instance.GameSize.widht, (uint)Config.Instance.GameSize.height);
+            CurrentSelection = ((int)_state.Grid.Width / 2, (int)_state.Grid.Height / 2);
             UpdateRate = Config.Instance.DefaultUpdateRate;
         }
 
@@ -38,7 +38,7 @@ namespace GameOfLife
             }
         }
 
-        public ICellGridIEnumerator<bool> GetCellEnumerator()
+        public ICellGridIEnumerator GetCellEnumerator()
         {
             return _state.Grid.GetEnumerator();
         }
@@ -50,7 +50,14 @@ namespace GameOfLife
         public void FlipAtSelection()
         {
             bool current = _state.Grid.GetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
-            _state.Grid.SetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y, !current);
+            if (current)
+            {
+                _state.Grid.ClearAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
+            }
+            else
+            {
+                _state.Grid.SetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
+            }
         }
 
         public void IncreaseUpdateRate()
@@ -91,7 +98,7 @@ namespace GameOfLife
             _ => CurrentSelection
         };
 
-        private bool WithinBounds((int x,int y) pos)
+        private bool WithinBounds((int x, int y) pos)
         {
             return (pos.x >= 0 && pos.y >= 0 && pos.x < _state.Grid.Width && pos.y < _state.Grid.Height);
         }

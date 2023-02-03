@@ -11,10 +11,10 @@
         /// <param name="width">width of the game</param>
         /// <param name="height">height of the game</param>
         /// <returns>Return the created game</returns>
-        public static IGameOfLife<bool> CreateGameOfLife(uint width, uint height)
+        public static IGameOfLife CreateGameOfLife(uint width, uint height)
         {
-            ICellGrid<bool> gridOne = new CellGridMorton<bool>(width, height);
-            ICellGrid<bool> gridTwo = new CellGridMorton<bool>(width, height);
+            ICellGrid gridOne = new CellGridMorton(width, height);
+            ICellGrid gridTwo = new CellGridMorton(width, height);
 
             return new GameOfLife(gridOne, gridTwo);
         }

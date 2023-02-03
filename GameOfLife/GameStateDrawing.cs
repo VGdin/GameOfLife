@@ -43,8 +43,8 @@ namespace GameOfLife
         {
             int cellSize = Config.Instance.CellSize;
             int selectionWidth = cellSize + _lineTexture.Width * 4;
-            int x_pos = cellSize * _gameState.CurrentSelection.x - _lineTexture.Width*2;
-            int y_pos = cellSize * _gameState.CurrentSelection.y - _lineTexture.Width*2;
+            int x_pos = cellSize * _gameState.CurrentSelection.x - _lineTexture.Width * 2;
+            int y_pos = cellSize * _gameState.CurrentSelection.y - _lineTexture.Width * 2;
 
             spriteBatch.Draw(_squareTexture,
                 new Rectangle(x_pos, y_pos, selectionWidth, selectionWidth),
@@ -60,7 +60,7 @@ namespace GameOfLife
         {
             int cellSize = Config.Instance.CellSize;
             int drawSize = Config.Instance.CellSize - _lineTexture.Width * 2;
-            ICellGridIEnumerator<bool> enumerator = _gameState.GetCellEnumerator();
+            ICellGridIEnumerator enumerator = _gameState.GetCellEnumerator();
             while (enumerator.MoveNext())
             {
                 if (enumerator.Current)
@@ -81,10 +81,10 @@ namespace GameOfLife
 
         private void DrawGrid(SpriteBatch spriteBatch)
         {
-            if (Config.Instance.DisableGridAboveZoom 
-                && _camera.Zoom < Config.Instance.ZoomGridThreshold) 
+            if (Config.Instance.DisableGridAboveZoom
+                && _camera.Zoom < Config.Instance.ZoomGridThreshold)
             {
-                return; 
+                return;
             }
 
             int cellSize = Config.Instance.CellSize;

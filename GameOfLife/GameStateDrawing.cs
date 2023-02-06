@@ -1,5 +1,4 @@
-﻿using GameOfLifeLib;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -34,7 +33,12 @@ namespace GameOfLife
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            DrawGrid(spriteBatch);
+            DrawOutline(spriteBatch);
+            if (!Config.Instance.DisableGridAboveZoom || (_camera.Zoom > Config.Instance.ZoomGridThreshold))
+            {
+                // if above zoom, dont draw grid lines
+                DrawGrid(spriteBatch);
+            }
             DrawSelection(spriteBatch);
             DrawCells(spriteBatch);
         }
@@ -75,13 +79,58 @@ namespace GameOfLife
             }
         }
 
+        private void DrawOutline(SpriteBatch spriteBatch)
+        {
+            int cellSize = Config.Instance.CellSize;
+            int cellSizeHalf = cellSize / 2;
+
+            int lineLengthDiag = cellSize * Config.Instance.GameSize.height;
+            int midDiag = cellSizeHalf * Config.Instance.GameSize.height;
+
+            int lineLengthHorz = cellSize * Config.Instance.GameSize.widht;
+            int midHorz = cellSizeHalf * Config.Instance.GameSize.widht;
+
+            int width = _lineTexture.Width * 4;
+
+            spriteBatch.Draw(_lineTexture,
+                new Rectangle(0, midDiag, width, lineLengthDiag),
+                null,
+                Color.DarkGreen,
+                0,
+                _middleOfLine,
+                SpriteEffects.None,
+                0);
+
+            spriteBatch.Draw(_lineTexture,
+                new Rectangle(lineLengthHorz, midDiag, width, lineLengthDiag),
+                null,
+                Color.DarkGreen,
+                0,
+                _middleOfLine,
+                SpriteEffects.None,
+                0);
+
+            spriteBatch.Draw(_lineTexture,
+                new Rectangle(midHorz, 0, width, lineLengthHorz),
+                null,
+                Color.DarkGreen,
+                _90DEG,
+                _middleOfLine,
+                SpriteEffects.None,
+                0);
+
+            spriteBatch.Draw(_lineTexture,
+                new Rectangle(midHorz, lineLengthDiag, width, lineLengthHorz),
+                null,
+                Color.DarkGreen,
+                _90DEG,
+                _middleOfLine,
+                SpriteEffects.None,
+                0);
+        }
+
         private void DrawGrid(SpriteBatch spriteBatch)
         {
-            if (Config.Instance.DisableGridAboveZoom
-                && _camera.Zoom < Config.Instance.ZoomGridThreshold)
-            {
-                return;
-            }
 
             int cellSize = Config.Instance.CellSize;
             int cellSizeHalf = cellSize / 2;
@@ -93,7 +142,7 @@ namespace GameOfLife
             int midHorz = cellSizeHalf * Config.Instance.GameSize.widht;
 
             // Horizontal Lines
-            for (int i = 0; i < Config.Instance.GameSize.widht + 1; i++)
+            for (int i = 1; i < Config.Instance.GameSize.widht; i++)
             {
                 spriteBatch.Draw(_lineTexture,
                     new Rectangle(cellSize * i, midDiag, _lineTexture.Width, lineLengthDiag),
@@ -105,7 +154,7 @@ namespace GameOfLife
                     0);
             }
             // Vertical Lines
-            for (int i = 0; i < Config.Instance.GameSize.height + 1; i++)
+            for (int i = 1; i < Config.Instance.GameSize.height; i++)
             {
                 spriteBatch.Draw(_lineTexture,
                     new Rectangle(midHorz, cellSize * i, _lineTexture.Width, lineLengthHorz),

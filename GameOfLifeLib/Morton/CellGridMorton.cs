@@ -6,7 +6,6 @@ namespace GameOfLifeLib.Morton
     /// <summary>
     /// CellGrid implementation representing a grid as a one dimensional array with Z-order indexing
     /// </summary>
-    /// <typeparam name="T">Content of a cell</typeparam>
     public partial class CellGridMorton : ICellGrid
     {
         /// <inheritdoc/>
@@ -88,11 +87,6 @@ namespace GameOfLifeLib.Morton
             }
 
             return noNeighborsActive;
-        }
-
-        public (int x, int y)[] getAllActive()
-        {
-            throw new NotImplementedException();
         }
     }
 }

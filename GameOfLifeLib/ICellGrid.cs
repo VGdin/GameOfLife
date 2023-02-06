@@ -36,11 +36,5 @@
         /// <param name="x">The x coordinate</param>
         /// <param name="y">The y coordinate</param>
         void ClearAt(uint x, uint y);
-
-        /// <summary>
-        /// Returns an array of all active cells
-        /// </summary>
-        /// <returns>Array with coordinates</returns>
-        (int x, int y)[] getAllActive();
     }
 }

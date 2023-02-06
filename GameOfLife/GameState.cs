@@ -1,6 +1,7 @@
 ﻿using GameOfLifeLib;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace GameOfLife
 {
@@ -21,7 +22,7 @@ namespace GameOfLife
         public GameState()
         {
             Size = (Config.Instance.GameSize.widht,Config.Instance.GameSize.height);
-            _state = GameOfLifeFactory.CreateGameOfLifeMorton((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
+            _state = GameOfLifeFactory.CreateGameOfLifeOptimized((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
             CurrentSelection = ((int)_state.Grid.Width / 2,(int) _state.Grid.Height / 2);
             UpdateRate = Config.Instance.DefaultUpdateRate;
         }
@@ -64,9 +65,9 @@ namespace GameOfLife
             UpdateRate *= 1.5f;
         }
 
-        public (int x, int y)[] getAllActiveCells()
+        public ISet<(uint x, uint y)> getAllActiveCells()
         {
-            return _state.Grid.getAllActive();
+            return _state.AllActiveCells;
         }
 
         public void MoveCurrentSelectionTo((int x, int y) newSelection)

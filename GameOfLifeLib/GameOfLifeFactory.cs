@@ -1,4 +1,5 @@
 ﻿using GameOfLifeLib.Morton;
+using GameOfLifeLib.Optimized;
 
 namespace GameOfLifeLib
 {
@@ -15,8 +16,8 @@ namespace GameOfLifeLib
         /// <returns>Return the created game</returns>
         public static IGameOfLife CreateGameOfLifeMorton(uint width, uint height)
         {
-            ICellGrid gridOne = new CellGridMorton(width, height);
-            ICellGrid gridTwo = new CellGridMorton(width, height);
+            CellGridMorton gridOne = new CellGridMorton(width, height);
+            CellGridMorton gridTwo = new CellGridMorton(width, height);
 
             return new GameOfLifeMorton(gridOne, gridTwo);
         }
@@ -30,7 +31,9 @@ namespace GameOfLifeLib
         /// <exception cref="NotImplementedException"></exception>
         public static IGameOfLife CreateGameOfLifeOptimized(uint width, uint height)
         {
-            throw new NotImplementedException();
+            CellGridOptimized gridOne = new CellGridOptimized(width, height);
+
+            return new GameOfLifeOptimized(gridOne);
         }
     }
 }

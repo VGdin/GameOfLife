@@ -1,34 +1,43 @@
 ﻿namespace GameOfLifeLib.Morton
 {
     /// <summary>
-    /// Implementation of GameOfLife that uses bool as the cell type
+    /// Implementation of GameOfLife that implements using Morton numbers
     /// </summary>
     public class GameOfLifeMorton : IGameOfLife
     {
 
         /// <inheritdoc/>>
-        public ICellGrid Grid { get; private set; }
-        private ICellGrid _newGrid;
+        public ICellGrid Grid {
+            get
+            {
+                return _mainGrid;
+            }
+        }
+
+        public ISet<(uint x, uint y)> AllActiveCells => throw new NotImplementedException();
+
+        private CellGridMorton _newGrid;
+        private CellGridMorton _mainGrid;
 
         /// <summary>
         /// Creates a new GameOfLife with two given CellGrids, switches between who is the main and tmp when taking a new step
         /// </summary>
         /// <param name="gridOne">First cell grid</param>
         /// <param name="gridTwo">Seconds cell grid</param>
-        public GameOfLifeMorton(ICellGrid gridOne, ICellGrid gridTwo)
+        public GameOfLifeMorton(CellGridMorton gridOne, CellGridMorton gridTwo)
         {
-            Grid = gridOne;
+            _mainGrid = gridOne;
             _newGrid = gridTwo;
         }
 
         /// <inheritdoc/>>
         public void Clear()
         {
-            for (uint x = 0; x < Grid.Width; x++)
+            for (uint x = 0; x < _mainGrid.Width; x++)
             {
-                for (uint y = 0; y < Grid.Height; y++)
+                for (uint y = 0; y < _mainGrid.Height; y++)
                 {
-                    Grid.ClearAt(x,y);
+                    _mainGrid.ClearAt(x,y);
                 }
             }
         }
@@ -36,12 +45,12 @@
         /// <inheritdoc/>>
         public void Step()
         {
-            for (uint x = 0; x < Grid.Width; x++)
+            for (uint x = 0; x < _mainGrid.Width; x++)
             {
-                for (uint y = 0; y < Grid.Height; y++)
+                for (uint y = 0; y < _mainGrid.Height; y++)
                 {
-                    int noNeighbors = Grid.GetNoActiveNeighbors(x,y, (b) => { return b; });
-                    if (newValue(noNeighbors,Grid.GetAt(x,y)))
+                    int noNeighbors = _mainGrid.GetNoActiveNeighbors(x,y);
+                    if (Utils.NewValue(noNeighbors,_mainGrid.GetAt(x,y)))
                     {
                         _newGrid.SetAt(x, y);
                     }
@@ -53,14 +62,7 @@
             }
 
             // Switch the of new and old grid
-            (_newGrid, Grid) = (Grid, _newGrid);
+            (_newGrid, _mainGrid) = (_mainGrid, _newGrid);
         }
-
-        private static bool newValue(int neigbors, bool current) => neigbors switch
-        {
-            2 => current,
-            3 => true,
-            _ => false
-        };
     }
 }

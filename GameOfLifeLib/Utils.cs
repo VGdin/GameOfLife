@@ -67,5 +67,18 @@
         {
             return v != 0 && (v & (v - 1)) == 0;
         }
+
+        /// <summary>
+        /// Check if a cells next value should be dead or alive
+        /// </summary>
+        /// <param name="neigbors"></param>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        public static bool NewValue(int neigbors, bool current) => neigbors switch
+        {
+            2 => current,
+            3 => true,
+            _ => false
+        };
     }
 }

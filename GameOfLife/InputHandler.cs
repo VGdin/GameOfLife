@@ -76,6 +76,7 @@ namespace GameOfLife
             { "CLEAR", (AvailableActions.ClearBoard, new Regex(@"^(CLEAR)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
             { "CENTER", (AvailableActions.CameraMoveTo, new Regex(@"^(CENTER)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
             { "GOTO", (AvailableActions.SelectionMoveTo, new Regex(@"^(GOTO)\s+(\d+)\s+(\d+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "LOAD",(AvailableActions.Load, new Regex(@"^(LOAD)\s+([\w\.\\]+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
         };
 
         public bool EditMode { get; private set; } = false;
@@ -119,7 +120,7 @@ namespace GameOfLife
                 switch (e.Key)
                 {
                     case Keys.Back:
-                            CurrentCommand = CurrentCommand.Length == 0 ? "" : CurrentCommand.Substring(0,CurrentCommand.Length - 1);
+                        CurrentCommand = CurrentCommand.Length == 0 ? "" : CurrentCommand.Substring(0, CurrentCommand.Length - 1);
                         break;
                     case Keys.Escape:
                         HandleAction(AvailableActions.ExitEditMode);
@@ -142,7 +143,7 @@ namespace GameOfLife
                         CurrentCommand = "";
                         break;
                     default:
-                        if (Char.IsAsciiLetterOrDigit(e.Character) || Char.IsSeparator(e.Character))
+                        if (Char.IsAscii(e.Character))
                         {
                             CurrentCommand += e.Character;
                         }
@@ -217,8 +218,10 @@ namespace GameOfLife
                 case AvailableActions.ExitEditMode:
                     EditMode = false;
                     break;
+                case AvailableActions.Load:
+                    _gameState.LoadFile(args[2].Value);
+                    break;
                 case AvailableActions.Save: //TODO:
-                case AvailableActions.Load: //TODO:
                 default:
                     throw new NotImplementedException("Action " + action + "not implemented");
             }

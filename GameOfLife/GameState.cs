@@ -83,6 +83,12 @@ namespace GameOfLife
             CurrentSelection = GetNewSelection(direction);
         }
 
+        public void LoadFile(string path)
+        {
+            IGameFileReader gameFileReader = GameFileHandlerFactory.CreateFileReader(path);
+            _state.Load(gameFileReader, (uint)CurrentSelection.x, (uint)CurrentSelection.y);
+        }
+
         private (int, int) GetNewSelection(SelectionDirection direction) => direction switch
         {
             SelectionDirection.Up when CurrentSelection.y == 0 => (CurrentSelection.x, Size.height - 1),

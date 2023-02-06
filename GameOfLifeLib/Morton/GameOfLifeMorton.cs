@@ -64,5 +64,15 @@
             // Switch the of new and old grid
             (_newGrid, _mainGrid) = (_mainGrid, _newGrid);
         }
+
+        public void Load(IGameFileReader fileHandler, uint x, uint y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save(IGameFileWriter fileHandler, uint x, uint y, uint w, uint h)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

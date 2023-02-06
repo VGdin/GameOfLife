@@ -67,19 +67,20 @@ namespace GameOfLife
             { Keys.Space,  AvailableActions.FlipValueAtPos}
         };
 
+        private static readonly RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.IgnoreCase;
         private static readonly Dictionary<string, (AvailableActions, Regex)> _commandMap = new Dictionary<string, (AvailableActions, Regex)>()
         {
-            { "EXIT", (AvailableActions.ExitEditMode, new Regex(@"^(EXIT)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
-            { "CLEAR", (AvailableActions.ClearBoard, new Regex(@"^(CLEAR)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
-            { "CENTER", (AvailableActions.CameraMoveTo, new Regex(@"^(CENTER)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
-            { "GOTO", (AvailableActions.SelectionMoveTo, new Regex(@"^(GOTO)\s+(\d+)\s+(\d+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
-            { "LOAD",(AvailableActions.Load, new Regex(@"^(LOAD)\s+([\w\.\\]+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) },
+            { "EXIT",       (AvailableActions.ExitEditMode,     new Regex(@"^(EXIT)\s*$", regexOptions)) },
+            { "CLEAR",      (AvailableActions.ClearBoard,       new Regex(@"^(CLEAR)\s*$", regexOptions)) },
+            { "CENTER",     (AvailableActions.CameraMoveTo,     new Regex(@"^(CENTER)\s*$", regexOptions)) },
+            { "GOTO",       (AvailableActions.SelectionMoveTo,  new Regex(@"^(GOTO)\s+(\d+)\s+(\d+)\s*$", regexOptions)) },
+            { "LOAD",       (AvailableActions.Load,             new Regex(@"^(LOAD)\s+([\w\.\\]+)\s*$", regexOptions)) },
         };
 
         public bool EditMode { get; private set; } = false;
         public string CurrentCommand { get; private set; } = "";
 
-        private Object inputLock = new Object();
+        private readonly Object _inputLock = new();
         private readonly GameState _gameState;
         private readonly Camera _camera;
 
@@ -91,15 +92,14 @@ namespace GameOfLife
 
         public void HandleInput(object sender, InputKeyEventArgs e)
         {
-            lock (inputLock)
+            lock (_inputLock)
             {
                 if (EditMode)
                 {
                     return;
                 }
 
-                AvailableActions action;
-                if (_keyMap.TryGetValue(e.Key, out action))
+                if (_keyMap.TryGetValue(e.Key, out AvailableActions action))
                 {
                     HandleAction(action);
                 }
@@ -108,7 +108,7 @@ namespace GameOfLife
 
         public void HandleText(object sender, TextInputEventArgs e)
         {
-            lock (inputLock)
+            lock (_inputLock)
             {
                 if (!EditMode)
                 {
@@ -123,19 +123,15 @@ namespace GameOfLife
                         HandleAction(AvailableActions.ExitEditMode);
                         break;
                     case Keys.Enter:
+                        //TODO: Tellback
                         string firstWord = CurrentCommand.ToUpper().Split(" ")[0];
-                        (AvailableActions action, Regex regex) command;
-                        if (_commandMap.TryGetValue(firstWord, out command))
+                        if (_commandMap.TryGetValue(firstWord, out (AvailableActions action, Regex regex) command))
                         {
                             Match match = command.regex.Match(CurrentCommand);
                             if (match.Success)
                             {
                                 HandleAction(command.action, match.Groups);
                             }
-                        }
-                        else
-                        {
-                            //TODO: Tellback
                         }
                         CurrentCommand = "";
                         break;

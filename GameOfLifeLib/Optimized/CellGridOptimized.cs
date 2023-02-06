@@ -161,10 +161,12 @@
         {
             Array.Copy(_representation,_tmp,_representation.Length);
             uint index, line;
-            for (uint y = 0; y < Height; y++)
+            uint width = Width;
+            uint height = Height;
+            for (uint y = 0; y < height; y++)
             {
-                line = Width * y;
-                for (uint x = 0; x < Width; x++)
+                line = width * y;
+                for (uint x = 0; x < width; x++)
                 {
                     index = line + x;
                     if (_tmp[index] != 0)

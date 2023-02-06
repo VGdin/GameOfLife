@@ -9,7 +9,7 @@ namespace GameOfLifeLib
     public static class GameOfLifeFactory
     {
         /// <summary>
-        /// Returns a Game of Life with morton grid with bool cells
+        /// Returns a Game of Life with morton grid
         /// </summary>
         /// <param name="width">width of the game</param>
         /// <param name="height">height of the game</param>
@@ -23,7 +23,7 @@ namespace GameOfLifeLib
         }
 
         /// <summary>
-        /// Returns a new Game Of Life with bool cells
+        /// Returns a new Game Of Life with optimized bit twidling
         /// </summary>
         /// <param name="width">width of the game</param>
         /// <param name="height">height of the game</param>

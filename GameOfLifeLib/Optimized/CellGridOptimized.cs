@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameOfLifeLib.Optimized
+﻿namespace GameOfLifeLib.Optimized
 {
     internal class CellGridOptimized : ICellGrid
     {
@@ -30,7 +23,6 @@ namespace GameOfLifeLib.Optimized
             Width = width;
             Height = height;
 
-            // Pad representation with on row/line of cells
             _representation = new byte[Width * height];
             _tmp = new byte[Width * height];
 

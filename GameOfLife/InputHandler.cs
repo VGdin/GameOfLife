@@ -77,7 +77,20 @@ namespace GameOfLife
             { "LOAD",       (AvailableActions.Load,             new Regex(@"^(LOAD)\s+([\w\.\\]+)\s*$", regexOptions)) },
         };
 
-        public bool EditMode { get; private set; } = false;
+        private bool _editMode = false;
+        private bool justBegunEdit = false;
+        public bool EditMode
+        {
+            get
+            {
+                return _editMode;
+            }
+            private set
+            {
+                _editMode = value;
+                justBegunEdit = true;
+            }
+        }
         public string CurrentCommand { get; private set; } = "";
 
         private readonly Object _inputLock = new();
@@ -112,6 +125,12 @@ namespace GameOfLife
             {
                 if (!EditMode)
                 {
+                    return;
+                }
+                else if (justBegunEdit)
+                {
+                    //HACK: to make it so that the symbol to enter edit mode is not added to current command.
+                    justBegunEdit = false;
                     return;
                 }
                 switch (e.Key)

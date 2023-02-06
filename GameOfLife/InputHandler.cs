@@ -2,14 +2,11 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace GameOfLife
-
-
 {
-    public sealed class InputHandler
+    internal sealed class InputHandler
     {
         public enum AvailableActions
         {

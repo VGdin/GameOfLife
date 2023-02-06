@@ -1,6 +1,9 @@
 ﻿namespace GameOfLifeLib.Optimized
 {
-    internal class GameOfLifeOptimized : IGameOfLife
+    /// <summary>
+    /// Implementation of Game of Life, utilizing bit-twidling etc.
+    /// </summary>
+    internal sealed class GameOfLifeOptimized : IGameOfLife
     {
         /// <inheritdoc/>
         public ICellGrid Grid
@@ -13,7 +16,7 @@
 
         public ISet<(uint x, uint y)> AllActiveCells => _mainGrid.ActiveCells;
 
-        public CellGridOptimized _mainGrid;
+        private CellGridOptimized _mainGrid;
 
         /// <summary>
         /// Create new game of life using two optimized grids

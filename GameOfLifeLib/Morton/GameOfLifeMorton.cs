@@ -3,7 +3,7 @@
     /// <summary>
     /// Implementation of GameOfLife that implements using Morton numbers
     /// </summary>
-    public class GameOfLifeMorton : IGameOfLife
+    internal sealed class GameOfLifeMorton : IGameOfLife
     {
 
         /// <inheritdoc/>>

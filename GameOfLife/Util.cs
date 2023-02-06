@@ -2,7 +2,7 @@
 
 namespace GameOfLife
 {
-    static class Util
+    internal static class Util
     {
         public static Vector2 TupleToVector2((int t1, int t2) tuple)
         {

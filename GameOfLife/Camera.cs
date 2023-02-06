@@ -11,9 +11,8 @@ namespace GameOfLife
     {
         ZoomIn, ZoomOut, ZoomMax, ZoomMin
     }
-    public sealed class Camera
+    internal sealed class Camera
     {
-
         public Vector2 Position { get; private set; } = new Vector2(Config.Instance.GameResolution.widht / 2, Config.Instance.GameResolution.height / 2);
         public float Zoom { get; private set; } = Config.Instance.DefaultZoom;
         public int ViewPortWidth { get; set; } = Config.Instance.DefaultResolution.widht;

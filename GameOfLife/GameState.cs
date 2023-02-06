@@ -1,16 +1,14 @@
 ﻿using GameOfLifeLib;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace GameOfLife
 {
-
     public enum SelectionDirection
     {
         Up, Down, Left, Right
     }
-    public sealed class GameState
+    internal sealed class GameState
     {
         public (int x, int y) CurrentSelection { get; private set; }
         public bool Paused { get; set; } = true;

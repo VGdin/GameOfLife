@@ -1,7 +1,7 @@
 ﻿namespace GameOfLifeLib
 {
     /// <summary>
-    /// A game of life, with a generic cell type
+    /// A game of life interface
     /// </summary>
     public interface IGameOfLife
     {
@@ -18,12 +18,12 @@
         /// <summary>
         /// Take one step in the game producing the next state
         /// </summary>
-        public void Step();
+        void Step();
 
         /// <summary>
         /// Clear all cells, restore to original state
         /// </summary>
-        public void Clear();
+        void Clear();
 
         /// <summary>
         /// Loads a pattern into game and places its top left corner at x, y
@@ -31,7 +31,7 @@
         /// <param name="fileHandler">Filehandler handling loading file</param>
         /// <param name="x">x coordinate in game</param>
         /// <param name="y">y coordinate in game</param>
-        public void Load(IGameFileReader fileHandler, uint x, uint y);
+        void Load(IGameFileReader fileHandler, uint x, uint y);
 
         /// <summary>
         /// Saves a pattern from game from top left corner of x,y with a width and height
@@ -41,6 +41,6 @@
         /// <param name="y">y coordinate in game</param>
         /// <param name="w">Width of pattern in game</param>
         /// <param name="h">Height of pattern in game</param>
-        public void Save(IGameFileWriter fileHandler, uint x, uint y, uint w, uint h);
+        void Save(IGameFileWriter fileHandler, uint x, uint y, uint w, uint h);
     }
 }

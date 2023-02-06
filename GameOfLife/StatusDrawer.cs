@@ -5,7 +5,7 @@ using System;
 
 namespace GameOfLife
 {
-    public sealed class StatusDrawer
+    internal sealed class StatusDrawer
     {
         private SpriteFont _text;
         private Texture2D _statusBackDrop;

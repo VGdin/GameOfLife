@@ -1,6 +1,9 @@
 ﻿namespace GameOfLifeLib.Optimized
 {
-    internal class CellGridOptimized : ICellGrid
+    /// <summary>
+    /// Cell Grid optimized with bit-twidling etc.
+    /// </summary>
+    internal sealed class CellGridOptimized : ICellGrid
     {
         /// <inheritdoc/>
         public uint Width { get; }

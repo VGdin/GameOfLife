@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Diagnostics;
-
-namespace GameOfLifeLib.Morton
+﻿namespace GameOfLifeLib.Morton
 {
     /// <summary>
     /// CellGrid implementation representing a grid as a one dimensional array with Z-order indexing
     /// </summary>
-    public partial class CellGridMorton : ICellGrid
+    internal sealed class CellGridMorton : ICellGrid
     {
         /// <inheritdoc/>
         public uint Width { get; }

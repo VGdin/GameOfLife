@@ -1,7 +1,7 @@
 # GameOfLife
 This is a simple Library and Game to showcase it. It was mainly a educational project for myself, if you want to use it for some reason, please go ahead.
 
-##The Lib
+## The Lib
 The GameOfLifeLib is programmed to be able to easily be used without the game itself with low coupling.
 It is able to run decently sized boards/patterns and does so one iteration at the time. I also has some basic functionality to load and save(soon.) files in plaintext format. Is is easily extendable to more file types.
 

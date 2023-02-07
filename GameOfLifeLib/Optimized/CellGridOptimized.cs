@@ -9,17 +9,17 @@
         public uint Width { get; }
         /// <inheritdoc/>
         public uint Height { get; }
-
+        /// <inheritdoc/>
         public HashSet<(uint x, uint y)> ActiveCells { get; }
 
         /**
          * U - unused
-         * N - Neighbor data
-         * S - State
+         * N - neighbor count
+         * S - state
          * => UUUN'NNNS
          */
-        private byte[] _representation;
-        private byte[] _tmp;
+        private readonly byte[] _representation;
+        private readonly byte[] _tmp;
 
         public CellGridOptimized(uint width, uint height)
         {
@@ -133,7 +133,7 @@
             _representation[ytop * Width + xleft] -= 2;
             _representation[ytop * Width + x] -= 2;
             _representation[ytop * Width + xright] -= 2;
-            _representation[y * Width + xleft]  -= 2;
+            _representation[y * Width + xleft] -= 2;
             _representation[y * Width + xright] -= 2;
             _representation[ybottom * Width + xleft] -= 2;
             _representation[ybottom * Width + x] -= 2;
@@ -157,12 +157,11 @@
         }
 
         /// <summary>
-        /// Calculates and rewrites the next generation into param
+        /// Calculates and rewrites the next generation
         /// </summary>
-        /// <param name="next">Cell grid of SAME SIZE that will contain next generation</param>
         public void NextGeneration()
         {
-            Array.Copy(_representation,_tmp,_representation.Length);
+            Array.Copy(_representation, _tmp, _representation.Length);
             uint index, line;
             uint width = Width;
             uint height = Height;

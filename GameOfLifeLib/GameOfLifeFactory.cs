@@ -16,7 +16,7 @@ namespace GameOfLifeLib
         /// <exception cref="NotImplementedException"></exception>
         public static IGameOfLife CreateGameOfLifeOptimized(uint width, uint height)
         {
-            CellGridOptimized gridOne = new CellGridOptimized(width, height);
+            CellGridOptimizedAbstract gridOne = new CellGridOptimizedChangeSet(width, height);
 
             return new GameOfLifeOptimized(gridOne);
         }

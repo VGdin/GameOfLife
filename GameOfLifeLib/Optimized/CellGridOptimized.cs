@@ -3,14 +3,8 @@
     /// <summary>
     /// Cell Grid optimized with bit-twidling etc.
     /// </summary>
-    internal sealed class CellGridOptimized : ICellGrid
+    internal sealed class CellGridOptimized : CellGridOptimizedAbstract
     {
-        /// <inheritdoc/>
-        public uint Width { get; }
-        /// <inheritdoc/>
-        public uint Height { get; }
-        /// <inheritdoc/>
-        public HashSet<(uint x, uint y)> ActiveCells { get; }
 
         /**
          * U - unused
@@ -21,25 +15,20 @@
         private readonly byte[] _representation;
         private readonly byte[] _tmp;
 
-        public CellGridOptimized(uint width, uint height)
+        public CellGridOptimized(uint width, uint height) : base(width,height)
         {
-            Width = width;
-            Height = height;
-
             _representation = new byte[Width * height];
             _tmp = new byte[Width * height];
-
-            ActiveCells = new HashSet<(uint x, uint y)>();
         }
 
         /// <inheritdoc/>
-        public bool GetAt(uint x, uint y)
+        public override bool GetAt(uint x, uint y)
         {
             return (_representation[y * Width + x] & 0b00000001) != 0;
         }
 
         /// <inheritdoc/>
-        public void SetAt(uint x, uint y)
+        public override void SetAt(uint x, uint y)
         {
             uint xleft, xright, ytop, ybottom;
             if (x == 0)
@@ -91,7 +80,7 @@
         }
 
         /// <inheritdoc/>
-        public void ClearAt(uint x, uint y)
+        public override void ClearAt(uint x, uint y)
         {
             uint xleft, xright, ytop, ybottom;
             if (x == 0)
@@ -143,23 +132,9 @@
         }
 
         /// <summary>
-        /// Clear all cells in grid
-        /// </summary>
-        public void Clear()
-        {
-            for (uint y = 0; y < Height; y++)
-            {
-                for (uint x = 0; x < Width; x++)
-                {
-                    ClearAt(x, y);
-                }
-            }
-        }
-
-        /// <summary>
         /// Calculates and rewrites the next generation
         /// </summary>
-        public void NextGeneration()
+        public override void NextGeneration()
         {
             Array.Copy(_representation, _tmp, _representation.Length);
             uint index, line;

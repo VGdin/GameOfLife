@@ -16,13 +16,13 @@
 
         public ISet<(uint x, uint y)> AllActiveCells => _mainGrid.ActiveCells;
 
-        private CellGridOptimized _mainGrid;
+        private CellGridOptimizedAbstract _mainGrid;
 
         /// <summary>
         /// Create new game of life using two optimized grids
         /// </summary>
         /// <param name="grid"></param>
-        public GameOfLifeOptimized(CellGridOptimized grid)
+        public GameOfLifeOptimized(CellGridOptimizedAbstract grid)
         {
             _mainGrid = grid;
         }
@@ -30,7 +30,13 @@
         /// <inheritdoc/>
         public void Clear()
         {
-            _mainGrid.Clear();
+            for (uint y = 0; y < _mainGrid.Height; y++)
+            {
+                for (uint x = 0; x < _mainGrid.Width; x++)
+                {
+                    _mainGrid.ClearAt(x, y);
+                }
+            }
         }
 
         /// <inheritdoc/>

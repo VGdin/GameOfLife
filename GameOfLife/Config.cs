@@ -12,7 +12,7 @@ namespace GameOfLife
         }
 
 
-        public readonly (int widht, int height) GameSize = (2000, 2000);
+        public readonly (int widht, int height) GameSize = (4000, 4000);
         public readonly float DefaultUpdateRate = (float)1 / 8;
 
         /* Camera and Drawing */
@@ -20,7 +20,7 @@ namespace GameOfLife
         public readonly int CellSize = 20;
         public readonly float DefaultZoom = 1f;
         public readonly float ZoomMax = 4f;
-        public readonly float ZoomMin = (float)1 / 8;
+        public readonly float ZoomMin = (float)1 / 32;
         public readonly float ZoomGridThreshold = (float)1 / 2;
         public readonly float CameraSpeed = 10f;
 

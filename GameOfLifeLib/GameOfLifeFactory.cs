@@ -1,5 +1,4 @@
-﻿using GameOfLifeLib.Morton;
-using GameOfLifeLib.Optimized;
+﻿using GameOfLifeLib.Optimized;
 
 namespace GameOfLifeLib
 {
@@ -8,20 +7,6 @@ namespace GameOfLifeLib
     /// </summary>
     public static class GameOfLifeFactory
     {
-        /// <summary>
-        /// Returns a Game of Life with morton grid
-        /// </summary>
-        /// <param name="width">width of the game</param>
-        /// <param name="height">height of the game</param>
-        /// <returns>Return the created game</returns>
-        public static IGameOfLife CreateGameOfLifeMorton(uint width, uint height)
-        {
-            CellGridMorton gridOne = new CellGridMorton(width, height);
-            CellGridMorton gridTwo = new CellGridMorton(width, height);
-
-            return new GameOfLifeMorton(gridOne, gridTwo);
-        }
-
         /// <summary>
         /// Returns a new Game Of Life with optimized bit twidling
         /// </summary>

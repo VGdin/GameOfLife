@@ -28,6 +28,7 @@ namespace GameOfLife
 
         /*  Derived */
         public (int widht, int height) GameResolution => (GameSize.widht * CellSize, GameSize.height * CellSize);
-        public (int x, int y, int widht, int height) StatusDimensions => (0, DefaultResolution.height - 100, DefaultResolution.widht, 100);
+        public (int x, int y, int widht, int height) StatusDimensions => (0, DefaultResolution.height - 100, 400, 100);
+        public (int x, int y, int widht, int height) LogoDimensions => (DefaultResolution.widht-400, DefaultResolution.height - 100, 400, 100);
     }
 }

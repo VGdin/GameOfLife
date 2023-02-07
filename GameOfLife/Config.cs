@@ -22,7 +22,7 @@ namespace GameOfLife
         public readonly float ZoomMax = 4f;
         public readonly float ZoomMin = (float)1 / 32;
         public readonly float ZoomGridThreshold = (float)1 / 2;
-        public readonly float CameraSpeed = 10f;
+        public readonly float CameraBaseSpeed = 20f;
 
         public readonly bool DisableGridAboveZoom = true;
 

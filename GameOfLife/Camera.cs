@@ -28,7 +28,7 @@ namespace GameOfLife
                 if (_isDirty)
                 {
                     _isDirty = false;
-                    _backingMatrix =  Matrix.CreateTranslation(-Position.X, -Position.Y, 0) * Matrix.CreateScale(Zoom, Zoom, 1) * Matrix.CreateTranslation(ViewPortCenter.X, ViewPortCenter.Y, 0);
+                    _backingMatrix = Matrix.CreateTranslation(-Position.X, -Position.Y, 0) * Matrix.CreateScale(Zoom, Zoom, 1) * Matrix.CreateTranslation(ViewPortCenter.X, ViewPortCenter.Y, 0);
                 }
                 return _backingMatrix;
             }
@@ -60,12 +60,14 @@ namespace GameOfLife
         public void MoveCamera(CameraDirections direction)
         {
             _isDirty = true;
+
+            float cameraSpeed = Config.Instance.CameraBaseSpeed * 1 / Zoom;
             Position += direction switch
             {
-                CameraDirections.Up => new Vector2(0, -Config.Instance.CameraSpeed),
-                CameraDirections.Down => new Vector2(0, Config.Instance.CameraSpeed),
-                CameraDirections.Left => new Vector2(-Config.Instance.CameraSpeed, 0),
-                CameraDirections.Right => new Vector2(Config.Instance.CameraSpeed, 0),
+                CameraDirections.Up => new Vector2(0, -cameraSpeed),
+                CameraDirections.Down => new Vector2(0, cameraSpeed),
+                CameraDirections.Left => new Vector2(-cameraSpeed, 0),
+                CameraDirections.Right => new Vector2(cameraSpeed,0),
                 _ => throw new NotImplementedException()
             };
         }

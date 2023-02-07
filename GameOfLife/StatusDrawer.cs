@@ -42,13 +42,14 @@ namespace GameOfLife
                 Color.White);
 
             spriteBatch.DrawString(_text,
-                String.Format("{0}\n{1}\n{2}\n{3}\n{4,-64}",
-                paused, updateRate, size, selection, command),
+                String.Format("{0,5} | Possible: {1,6} | Cap: {2,6}\n{3}\n{4}\n{5,-64}",
+                paused, updateRate, updateCap, size, selection, command),
                 new Vector2(statusDimensions.x + 10, statusDimensions.y + 10), Color.Black);
         }
 
         private string paused => _gameState.Paused ? "Pause" : "Play";
-        private string updateRate => String.Format("{0:f1}Hz", 1 / _gameState.UpdateRate);
+        private string updateRate => String.Format("{0,4:f1}Hz", _gameState.UpdateRate == 0 ? 0 : 1 / _gameState.UpdateRate);
+        private string updateCap => String.Format("{0,4:f1}Hz", _gameState.UpdateCap == 0 ? 0 : 1 / _gameState.UpdateCap);
         private string size => "Size: " + Config.Instance.GameSize;
         private string selection => "Sel: " + _gameState.CurrentSelection;
         private string command => _inputHandler.EditMode ? ": " + _inputHandler.CurrentCommand : "";

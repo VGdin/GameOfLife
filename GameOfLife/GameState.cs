@@ -1,6 +1,7 @@
 ﻿using GameOfLifeLib;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GameOfLife
 {
@@ -13,27 +14,45 @@ namespace GameOfLife
         public (int x, int y) CurrentSelection { get; private set; }
         public bool Paused { get; set; } = true;
         public float UpdateRate { get; private set; }
+        public float UpdateCap { get; private set; }
 
         private readonly IGameOfLife _state;
         private (int width, int height) Size;
 
         public GameState()
         {
-            Size = (Config.Instance.GameSize.widht,Config.Instance.GameSize.height);
-            _state = GameOfLifeFactory.CreateGameOfLifeOptimized((uint) Config.Instance.GameSize.widht,(uint) Config.Instance.GameSize.height );
-            CurrentSelection = ((int)_state.Grid.Width / 2,(int) _state.Grid.Height / 2);
-            UpdateRate = Config.Instance.DefaultUpdateRate;
+            Size = (Config.Instance.GameSize.widht, Config.Instance.GameSize.height);
+            _state = GameOfLifeFactory.CreateGameOfLifeOptimized((uint)Config.Instance.GameSize.widht, (uint)Config.Instance.GameSize.height);
+            CurrentSelection = ((int)_state.Grid.Width / 2, (int)_state.Grid.Height / 2);
+            UpdateCap = Config.Instance.DefaultUpdateRate;
         }
 
         private double latestUpdate = 0;
+        private Stopwatch _stopwatch = new();
+        private int _latest_index = 0;
+        private float[] _latest_times = new float[10];
         public void Update(GameTime gameTime)
         {
             // Check if enough time has elapsed
             latestUpdate += gameTime.ElapsedGameTime.TotalSeconds;
-            if (!Paused && latestUpdate > UpdateRate)
+            if (!Paused && latestUpdate > UpdateCap)
             {
                 latestUpdate = 0;
+
+                // Time a step
+                _stopwatch.Restart();
                 _state.Step();
+                _stopwatch.Stop();
+
+
+                /// Calc average update speed
+                UpdateRate -= _latest_times[_latest_index] / _latest_times.Length;
+                _latest_times[_latest_index] = _stopwatch.ElapsedMilliseconds / 1000f;
+                UpdateRate += _latest_times[_latest_index] / _latest_times.Length;
+                if (++_latest_index >= _latest_times.Length)
+                {
+                    _latest_index = 0;
+                }
             }
         }
 
@@ -56,11 +75,11 @@ namespace GameOfLife
 
         public void IncreaseUpdateRate()
         {
-            UpdateRate /= 1.5f;
+            UpdateCap /= 1.5f;
         }
         public void DecreaseUpdateRate()
         {
-            UpdateRate *= 1.5f;
+            UpdateCap *= 1.5f;
         }
 
         public ISet<(uint x, uint y)> getAllActiveCells()

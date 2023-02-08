@@ -34,11 +34,9 @@ namespace GameOfLife
             _gameState = new GameState();
             _camera= new Camera();
             _gameStateDrawer = new GameStateDrawer(_gameState, _camera);
-            _inputHandler = new InputHandler(_gameState, _camera);
+            _inputHandler = new InputHandler(Window, _gameState, _camera);
             _statusDrawer = new StatusDrawer(_gameState, _inputHandler);
 
-
-            Window.TextInput += _inputHandler.HandleText;
             Window.KeyDown += _inputHandler.HandleInput;
 
             base.Initialize();

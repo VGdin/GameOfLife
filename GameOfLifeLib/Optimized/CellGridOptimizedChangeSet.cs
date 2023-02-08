@@ -36,6 +36,17 @@ namespace GameOfLifeLib.Optimized
             _changeListBack = new();
         }
 
+        public override void ClearAll()
+        {
+            for(uint i = 0; i< _representation.Length; i++)
+            {
+                _representation[i] &= 0x00;
+            }
+            _changeListBack.Clear();
+            _changeListMain.Clear();
+            ActiveCells.Clear();
+        }
+
         /// <inheritdoc/>
         public override bool GetAt(uint x, uint y)
         {

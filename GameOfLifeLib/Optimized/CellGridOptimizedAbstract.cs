@@ -34,6 +34,8 @@ namespace GameOfLifeLib.Optimized
             ActiveCells = new HashSet<(uint x, uint y)>();
         }
 
+        public abstract void ClearAll();
+
         /// <inheritdoc/>
         public abstract void ClearAt(uint x, uint y);
 

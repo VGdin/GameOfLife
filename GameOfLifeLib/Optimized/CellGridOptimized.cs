@@ -15,10 +15,20 @@
         private readonly byte[] _representation;
         private readonly byte[] _tmp;
 
-        public CellGridOptimized(uint width, uint height) : base(width,height)
+        public CellGridOptimized(uint width, uint height) : base(width, height)
         {
             _representation = new byte[Width * height];
             _tmp = new byte[Width * height];
+        }
+
+
+        public override void ClearAll()
+        {
+            for (uint i = 0; i < _representation.Length; i++)
+            {
+                _representation[i] &= 0x00;
+            }
+            ActiveCells.Clear();
         }
 
         /// <inheritdoc/>

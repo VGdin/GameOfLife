@@ -30,13 +30,7 @@
         /// <inheritdoc/>
         public void Clear()
         {
-            for (uint y = 0; y < _mainGrid.Height; y++)
-            {
-                for (uint x = 0; x < _mainGrid.Width; x++)
-                {
-                    _mainGrid.ClearAt(x, y);
-                }
-            }
+            _mainGrid.ClearAll();
         }
 
         /// <inheritdoc/>

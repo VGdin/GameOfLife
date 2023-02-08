@@ -147,26 +147,23 @@ namespace GameOfLifeLib.Optimized
             foreach ((uint x, uint y) cell in _changeListBack)
             {
                 uint index = cell.y * _width + cell.x;
-                if (_tmp[index] != 0)
+                int count = _tmp[index] >> 1;
+                if ((_tmp[index] & 0b00000001) != 0)
                 {
-                    int count = _tmp[index] >> 1;
-                    if ((_tmp[index] & 0b00000001) != 0)
+                    if (count != 2 && count != 3)
                     {
-                        if (count != 2 && count != 3)
-                        {
-                            ClearAt(cell.x, cell.y);
-                        }
+                        ClearAt(cell.x, cell.y);
                     }
-                    else
+                }
+                else
+                {
+                    if (count == 3)
                     {
-                        if (count == 3)
-                        {
-                            SetAt(cell.x, cell.y);
-                        }
+                        SetAt(cell.x, cell.y);
                     }
                 }
             }
-             _changeListBack.Clear();
+            _changeListBack.Clear();
         }
     }
 }

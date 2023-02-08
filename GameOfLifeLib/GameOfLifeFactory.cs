@@ -18,7 +18,7 @@ namespace GameOfLifeLib
         {
             CellGridOptimizedAbstract grid;
 
-            if (width * height > 4000)
+            if (width * height > 65536)
             {
                 grid = new CellGridOptimizedChangeSet(width, height);
             }

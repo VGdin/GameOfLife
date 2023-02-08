@@ -8,6 +8,12 @@ namespace GameOfLife
 {
     internal sealed class InputHandler
     {
+        public enum Modes
+        {
+            Normal,
+            Input,
+            Visual
+        }
         public enum AvailableActions
         {
             /* Selection Controls */
@@ -33,9 +39,12 @@ namespace GameOfLife
             ClearBoard,
             FlipValueAtPos,
 
+            /* MODES */
+            InputMode,
+            NormalMode,
+            VisualMode,
+
             /* MISC */
-            EnterEditMode,
-            ExitEditMode,
             Save,
             Load
         }
@@ -61,7 +70,7 @@ namespace GameOfLife
             { Keys.U,  AvailableActions.CameraZoomOut},
 
             /* MISC */
-            { Keys.OemPeriod,  AvailableActions.EnterEditMode},
+            { Keys.OemPeriod,  AvailableActions.InputMode},
             { Keys.P,  AvailableActions.Pause},
             { Keys.C,  AvailableActions.ClearBoard},
             { Keys.Space,  AvailableActions.FlipValueAtPos}
@@ -70,97 +79,117 @@ namespace GameOfLife
         private static readonly RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.IgnoreCase;
         private static readonly Dictionary<string, (AvailableActions, Regex)> _commandMap = new Dictionary<string, (AvailableActions, Regex)>()
         {
-            { "EXIT",       (AvailableActions.ExitEditMode,     new Regex(@"^(EXIT)\s*$", regexOptions)) },
+            { "EXIT",       (AvailableActions.NormalMode,       new Regex(@"^(EXIT)\s*$", regexOptions)) },
+            { "PAUSE",      (AvailableActions.Pause,            new Regex(@"^(PAUSE)\s*$", regexOptions)) },
             { "CLEAR",      (AvailableActions.ClearBoard,       new Regex(@"^(CLEAR)\s*$", regexOptions)) },
             { "CENTER",     (AvailableActions.CameraMoveTo,     new Regex(@"^(CENTER)\s*$", regexOptions)) },
             { "GOTO",       (AvailableActions.SelectionMoveTo,  new Regex(@"^(GOTO)\s+(\d+)\s+(\d+)\s*$", regexOptions)) },
             { "LOAD",       (AvailableActions.Load,             new Regex(@"^(LOAD)\s+([\w\.\\]+)\s*$", regexOptions)) },
         };
 
-        private bool _editMode = false;
-        private bool justBegunEdit = false;
-        public bool EditMode
+        public string CurrentCommand { get; private set; } = "";
+        public Modes CurrentMode
         {
-            get
-            {
-                return _editMode;
-            }
+            get { return _currentMode; }
             private set
             {
-                _editMode = value;
-                justBegunEdit = true;
+                _currentMode = value;
+                CurrentCommand = "";
+                hasEnteredInputMode = false;
             }
         }
-        public string CurrentCommand { get; private set; } = "";
 
-        private readonly Object _inputLock = new();
+        private Modes _currentMode = Modes.Normal;
+        private readonly LinkedList<string> _commandHistory = new();
+        private LinkedListNode<string> _commandHistoryNode = null;
+        private bool hasEnteredInputMode = false;
+
+        private readonly GameWindow _window;
         private readonly GameState _gameState;
         private readonly Camera _camera;
 
-        public InputHandler(GameState gameState, Camera camera)
+        public InputHandler(GameWindow window, GameState gameState, Camera camera)
         {
+            _window = window;
             _gameState = gameState;
             _camera = camera;
         }
 
         public void HandleInput(object sender, InputKeyEventArgs e)
         {
-            lock (_inputLock)
+            switch (CurrentMode)
             {
-                if (EditMode)
-                {
-                    return;
-                }
+                case Modes.Normal:
+                    AvailableActions action;
+                    if (_keyMap.TryGetValue(e.Key, out action))
+                    {
+                        HandleAction(action);
+                    }
+                    break;
 
-                if (_keyMap.TryGetValue(e.Key, out AvailableActions action))
-                {
-                    HandleAction(action);
-                }
+                case Modes.Input:
+                    HandleConsoleInput(e.Key);
+                    break;
+
+                case Modes.Visual:
+                default:
+                    break;
             }
         }
 
         public void HandleText(object sender, TextInputEventArgs e)
         {
-            lock (_inputLock)
+            //HACK: return first time so char to enter input mode is not also added.
+            if (!hasEnteredInputMode)
             {
-                if (!EditMode)
-                {
-                    return;
-                }
-                else if (justBegunEdit)
-                {
-                    //HACK: to make it so that the symbol to enter edit mode is not added to current command.
-                    justBegunEdit = false;
-                    return;
-                }
-                switch (e.Key)
-                {
-                    case Keys.Back:
-                        CurrentCommand = CurrentCommand.Length == 0 ? "" : CurrentCommand.Substring(0, CurrentCommand.Length - 1);
-                        break;
-                    case Keys.Escape:
-                        HandleAction(AvailableActions.ExitEditMode);
-                        break;
-                    case Keys.Enter:
-                        //TODO: Tellback
-                        string firstWord = CurrentCommand.ToUpper().Split(" ")[0];
-                        if (_commandMap.TryGetValue(firstWord, out (AvailableActions action, Regex regex) command))
+                hasEnteredInputMode = true;
+                return;
+            }
+            if (CurrentMode == Modes.Input && !Char.IsControl(e.Character))
+            {
+                CurrentCommand += e.Character;
+            }
+        }
+
+        private void HandleConsoleInput(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.Back:
+                    CurrentCommand = CurrentCommand.Length == 0 ? "" : CurrentCommand[..^1];
+                    break;
+
+                case Keys.Escape:
+                    HandleAction(AvailableActions.NormalMode);
+                    break;
+
+                case Keys.Up:
+                    _commandHistoryNode = _commandHistoryNode?.Next ?? _commandHistory.First;
+                    CurrentCommand = _commandHistoryNode?.Value ?? "";
+                    break;
+
+                case Keys.Down:
+                    _commandHistoryNode = _commandHistoryNode?.Previous ?? null;
+                    CurrentCommand = _commandHistoryNode?.Value ?? "";
+                    break;
+
+                case Keys.Enter:
+                    //TODO: Add tellback if wrong form etc.
+                    string firstWord = CurrentCommand.ToUpper().Split(" ")[0];
+                    if (_commandMap.TryGetValue(firstWord, out (AvailableActions action, Regex regex) command))
+                    {
+                        Match match = command.regex.Match(CurrentCommand);
+                        if (match.Success)
                         {
-                            Match match = command.regex.Match(CurrentCommand);
-                            if (match.Success)
-                            {
-                                HandleAction(command.action, match.Groups);
-                            }
+                            HandleAction(command.action, match.Groups);
                         }
-                        CurrentCommand = "";
-                        break;
-                    default:
-                        if (Char.IsAscii(e.Character))
-                        {
-                            CurrentCommand += e.Character;
-                        }
-                        break;
-                }
+                    }
+                    _commandHistory.AddFirst(CurrentCommand);
+                    CurrentCommand = "";
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -224,11 +253,17 @@ namespace GameOfLife
                 case AvailableActions.CameraZoomOut:
                     _camera.ZoomCamera(ZoomActions.ZoomOut);
                     break;
-                case AvailableActions.EnterEditMode:
-                    EditMode = true;
+                case AvailableActions.NormalMode:
+                    CurrentMode = Modes.Normal;
+                    _window.TextInput -= HandleText;
                     break;
-                case AvailableActions.ExitEditMode:
-                    EditMode = false;
+                case AvailableActions.InputMode:
+                    CurrentMode = Modes.Input;
+                    _window.TextInput += HandleText;
+                    break;
+                case AvailableActions.VisualMode:
+                    CurrentMode = Modes.Visual;
+                    _window.TextInput -= HandleText;
                     break;
                 case AvailableActions.Load:
                     _gameState.LoadFile(args[2].Value);

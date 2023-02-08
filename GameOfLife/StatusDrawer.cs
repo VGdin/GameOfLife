@@ -42,17 +42,23 @@ namespace GameOfLife
                 Color.White);
 
             spriteBatch.DrawString(_text,
-                String.Format("{0,5} | Possible: {1,6} | Cap: {2,6}\n{3}\n{4}\n{5,-64}",
-                paused, updateRate, updateCap, size, selection, command),
+                String.Format("{0,5} | Possible: {1,8} | Cap: {2,8}\n{3}\n{4}\n{6,-6}| {5,-64}",
+                paused, updateRate, updateCap, size, selection, command, mode),
                 new Vector2(statusDimensions.x + 10, statusDimensions.y + 10), Color.Black);
         }
 
         private string paused => _gameState.Paused ? "Pause" : "Play";
-        private string updateRate => String.Format("{0,4:f1}Hz", _gameState.UpdateRate == 0 ? 0 : 1 / _gameState.UpdateRate);
-        private string updateCap => String.Format("{0,4:f1}Hz", _gameState.UpdateCap == 0 ? 0 : 1 / _gameState.UpdateCap);
+        private string updateRate => String.Format("{0,6:f1}Hz", _gameState.UpdateRate == 0 ? 0 : 1 / _gameState.UpdateRate);
+        private string updateCap => String.Format("{0,6:f1}Hz", _gameState.UpdateCap == 0 ? 0 : 1 / _gameState.UpdateCap);
         private string size => "Size: " + Config.Instance.GameSize;
         private string selection => "Sel: " + _gameState.CurrentSelection;
-        private string command => _inputHandler.EditMode ? ": " + _inputHandler.CurrentCommand : "";
-
+        private string mode => _inputHandler.CurrentMode switch
+        {
+            InputHandler.Modes.Normal => "NORMAL",
+            InputHandler.Modes.Input => "INPUT",
+            InputHandler.Modes.Visual => "VISUAl",
+            _ => throw new NotImplementedException("Status drawer not implemented for current mode: " + _inputHandler.CurrentMode)
+        };
+        private string command => _inputHandler.CurrentMode == InputHandler.Modes.Input ? _inputHandler.CurrentCommand : "";
     }
 }

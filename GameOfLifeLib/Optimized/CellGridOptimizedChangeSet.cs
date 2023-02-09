@@ -25,7 +25,6 @@ namespace GameOfLifeLib.Optimized
          * => UCXN'NNNS
          */
         private readonly byte[] _representation;
-
         private HashSet<(uint x, uint y)> _changeListMain;
         private HashSet<(uint x, uint y)> _changeListBack;
 
@@ -56,21 +55,21 @@ namespace GameOfLifeLib.Optimized
         /// <inheritdoc/>
         public override void SetAt(uint x, uint y)
         {
-            (uint xl, uint xr, uint yt, uint yb) adjecent = GetAdjecent(x, y);
+            (uint xl, uint xr, uint yt, uint yb) = GetAdjecent(x, y);
             // Set state
             _representation[y * _width + x] |= VALUE_MASK;
 
             // Update neighbors with data
-            _representation[adjecent.yt * _width + adjecent.xl] += 2;
-            _representation[adjecent.yt * _width + x] += 2;
-            _representation[adjecent.yt * _width + adjecent.xr] += 2;
-            _representation[y * _width + adjecent.xl] += 2;
-            _representation[y * _width + adjecent.xr] += 2;
-            _representation[adjecent.yb * _width + adjecent.xl] += 2;
-            _representation[adjecent.yb * _width + x] += 2;
-            _representation[adjecent.yb * _width + adjecent.xr] += 2;
+            _representation[yt * _width + xl] += 2;
+            _representation[yt * _width + x] += 2;
+            _representation[yt * _width + xr] += 2;
+            _representation[y * _width + xl] += 2;
+            _representation[y * _width + xr] += 2;
+            _representation[yb * _width + xl] += 2;
+            _representation[yb * _width + x] += 2;
+            _representation[yb * _width + xr] += 2;
 
-            AddToChangeList(x, y, adjecent.xl, adjecent.xr, adjecent.yt, adjecent.yb);
+            AddToChangeList(x, y, xl, xr, yt, yb);
 
             ActiveCells.Add((x, y));
         }
@@ -78,21 +77,21 @@ namespace GameOfLifeLib.Optimized
         /// <inheritdoc/>
         public override void ClearAt(uint x, uint y)
         {
-            (uint xl, uint xr, uint yt, uint yb) adjecent = GetAdjecent(x, y);
+            (uint xl, uint xr, uint yt, uint yb) = GetAdjecent(x, y);
             // Set state
             _representation[y * _width + x] &= VALUE_MASK_CLEAR;
 
             // Update neighbors with data
-            _representation[adjecent.yt * _width + adjecent.xl] -= 2;
-            _representation[adjecent.yt * _width + x] -= 2;
-            _representation[adjecent.yt * _width + adjecent.xr] -= 2;
-            _representation[y * _width + adjecent.xl] -= 2;
-            _representation[y * _width + adjecent.xr] -= 2;
-            _representation[adjecent.yb * _width + adjecent.xl] -= 2;
-            _representation[adjecent.yb * _width + x] -= 2;
-            _representation[adjecent.yb * _width + adjecent.xr] -= 2;
+            _representation[yt * _width + xl] -= 2;
+            _representation[yt * _width + x] -= 2;
+            _representation[yt * _width + xr] -= 2;
+            _representation[y * _width + xl] -= 2;
+            _representation[y * _width + xr] -= 2;
+            _representation[yb * _width + xl] -= 2;
+            _representation[yb * _width + x] -= 2;
+            _representation[yb * _width + xr] -= 2;
 
-            AddToChangeList(x, y, adjecent.xl, adjecent.xr, adjecent.yt, adjecent.yb);
+            AddToChangeList(x, y, xl, xr, yt, yb);
 
             ActiveCells.Remove((x, y));
         }
@@ -153,9 +152,9 @@ namespace GameOfLifeLib.Optimized
         public override void NextGeneration()
         {
             (_changeListMain, _changeListBack) = (_changeListBack, _changeListMain);
-            foreach ((uint x, uint y) cell in _changeListBack)
+            foreach ((uint x, uint y) in _changeListBack)
             {
-                uint index = cell.y * _width + cell.x;
+                uint index = y * _width + x;
                 int count = (_representation[index] & NEIGH_MASK) >> 1;
 
                 if ((_representation[index] & VALUE_MASK) != 0)
@@ -176,18 +175,18 @@ namespace GameOfLifeLib.Optimized
                 }
             }
 
-            foreach ((uint x, uint y) cell in _changeListBack)
+            foreach ((uint x, uint y) in _changeListBack)
             {
-                uint index = cell.y * _width + cell.x;
+                uint index = y * _width + x;
                 if ((_representation[index] & CHANG_MASK) != 0)
                 {
                     if ((_representation[index] & NEXTV_MASK) != 0)
                     {
-                        SetAt(cell.x, cell.y);
+                        SetAt(x, y);
                     }
                     else
                     {
-                        ClearAt(cell.x, cell.y);
+                        ClearAt(x, y);
                     }
 
                     _representation[index] &= CHANG_MASK_CLEAR;

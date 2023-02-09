@@ -5,7 +5,7 @@ namespace GameOfLifeLib
     /// <summary>
     /// Factory to return setup GameOfLife's
     /// </summary>
-    public static class GameOfLifeFactory
+    public static class GameFactory
     {
         /// <summary>
         /// Returns a new Game Of Life with optimized bit twidling

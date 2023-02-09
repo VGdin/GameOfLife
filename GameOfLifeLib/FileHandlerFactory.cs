@@ -3,9 +3,9 @@
 namespace GameOfLifeLib
 {
     /// <summary>
-    /// Factory to read different type of file types
+    /// Factory to read and write different type of file types
     /// </summary>
-    public static class GameFileHandlerFactory
+    public static class FileHandlerFactory
     {
 
         /// <summary>

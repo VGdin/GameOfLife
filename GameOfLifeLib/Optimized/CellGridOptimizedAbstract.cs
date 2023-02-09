@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameOfLifeLib.Optimized
+﻿namespace GameOfLifeLib.Optimized
 {
+    /// <summary>
+    /// Abstract Class used in Game of Life Optimized, mainly introduces NextGeneration to do the calculation of next generation in the grid.
+    /// </summary>
     internal abstract class CellGridOptimizedAbstract : ICellGrid
     {
         protected uint _width;

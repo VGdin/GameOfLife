@@ -30,7 +30,7 @@ namespace GameOfLifeLib.FileHandlers
                 }
                 else if (_commentLineFormat.IsMatch(line))
                 {
-                    //Do nothing with comments
+                    // Do nothing with comments
                 }
                 else if (_gameLineFormat.IsMatch(line))
                 {
@@ -43,13 +43,13 @@ namespace GameOfLifeLib.FileHandlers
                 }
                 else
                 {
-                    throw new FormatException(String.Format("Error parsing file at line {}. Malformatted line: {}", y, line));
+                    throw new FormatException(string.Format("Error parsing file at line {0}. Malformatted line: {1}", y, line));
                 }
             }
 
             representation = new bool[Width, Height];
 
-            //Populate matrix with data, i = line in file, y = line representation
+            // Populate matrix with data, i = line in file, y = line representation
             // Makes it possible to intersperse comments between two lines (why not?)
             int y_matrix = -1;
             for (int i = 0; i < content.Length; i++)

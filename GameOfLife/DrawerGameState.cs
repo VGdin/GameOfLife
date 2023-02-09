@@ -5,10 +5,11 @@ using System;
 
 namespace GameOfLife
 {
-    internal sealed class GameStateDrawer
+    /// <summary>
+    /// Class to draw the current state of the game
+    /// </summary>
+    internal sealed class DrawerGameState
     {
-        private const float _90DEG = (float)Math.PI / 2;
-
         private Texture2D _lineTexture;
         private Texture2D _cellTexture;
         private Texture2D _squareTexture;
@@ -17,17 +18,18 @@ namespace GameOfLife
 
         private readonly GameState _gameState;
         private readonly Camera _camera;
-        public GameStateDrawer(GameState gameState, Camera camera)
+
+        public DrawerGameState(GameState gameState, Camera camera)
         {
             _gameState = gameState;
             _camera = camera;
         }
+
         public void LoadContent(ContentManager content)
         {
             _lineTexture = content.Load<Texture2D>("line");
             _cellTexture = content.Load<Texture2D>("circle");
             _squareTexture = content.Load<Texture2D>("square");
-
             _middleOfLine = new Vector2(_lineTexture.Width / 2, _lineTexture.Height / 2);
         }
 
@@ -63,11 +65,12 @@ namespace GameOfLife
         private void DrawCells(SpriteBatch spriteBatch)
         {
             int cellSize = Config.Instance.CellSize;
-            int drawSize = Config.Instance.CellSize - _lineTexture.Width * 2;
-            foreach ((int x, int y) pos in _gameState.getAllActiveCells())
+            int drawSize = cellSize - _lineTexture.Width * 2;
+
+            foreach (var (x, y) in _gameState.getAllActiveCells())
             {
-                int x_pos = cellSize * pos.x + _lineTexture.Width;
-                int y_pos = cellSize * pos.y + _lineTexture.Width;
+                int x_pos = cellSize * (int)x + _lineTexture.Width;
+                int y_pos = cellSize * (int)y + _lineTexture.Width;
                 spriteBatch.Draw(_cellTexture,
                     new Rectangle(x_pos, y_pos, drawSize, drawSize),
                     null,
@@ -114,7 +117,7 @@ namespace GameOfLife
                 new Rectangle(midHorz, 0, width, lineLengthHorz),
                 null,
                 Color.DarkGreen,
-                _90DEG,
+                MathHelper.PiOver2,
                 _middleOfLine,
                 SpriteEffects.None,
                 0);
@@ -123,7 +126,7 @@ namespace GameOfLife
                 new Rectangle(midHorz, lineLengthDiag, width, lineLengthHorz),
                 null,
                 Color.DarkGreen,
-                _90DEG,
+                MathHelper.PiOver2,
                 _middleOfLine,
                 SpriteEffects.None,
                 0);
@@ -131,7 +134,6 @@ namespace GameOfLife
 
         private void DrawGrid(SpriteBatch spriteBatch)
         {
-
             int cellSize = Config.Instance.CellSize;
             int cellSizeHalf = cellSize / 2;
 
@@ -153,6 +155,7 @@ namespace GameOfLife
                     SpriteEffects.None,
                     0);
             }
+
             // Vertical Lines
             for (int i = 1; i < Config.Instance.GameSize.height; i++)
             {
@@ -160,10 +163,10 @@ namespace GameOfLife
                     new Rectangle(midHorz, cellSize * i, _lineTexture.Width, lineLengthHorz),
                     null,
                     Color.SlateGray,
-                    _90DEG,
+                    MathHelper.PiOver2,
                     _middleOfLine,
                     SpriteEffects.None,
-                    0);
+                    0) ;
             }
         }
     }

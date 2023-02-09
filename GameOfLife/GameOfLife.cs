@@ -12,10 +12,10 @@ namespace GameOfLife
         private InputHandler _inputHandler;
         
         private SpriteBatch _statusSpriteBatch;
-        private StatusDrawer _statusDrawer;
+        private DrawerStatus _statusDrawer;
 
         private SpriteBatch _gameSpriteBatch;
-        private GameStateDrawer _gameStateDrawer;
+        private DrawerGameState _gameStateDrawer;
         private Camera _camera;
 
         public GameOfLife()
@@ -33,9 +33,9 @@ namespace GameOfLife
 
             _gameState = new GameState();
             _camera= new Camera();
-            _gameStateDrawer = new GameStateDrawer(_gameState, _camera);
+            _gameStateDrawer = new DrawerGameState(_gameState, _camera);
             _inputHandler = new InputHandler(Window, _gameState, _camera);
-            _statusDrawer = new StatusDrawer(_gameState, _inputHandler);
+            _statusDrawer = new DrawerStatus(_gameState, _inputHandler);
 
             Window.KeyDown += _inputHandler.HandleInput;
 

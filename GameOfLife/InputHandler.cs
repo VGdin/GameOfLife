@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace GameOfLife
 {
+    /// <summary>
+    /// Class to handle all of the input, either by text or normal keypresses
+    /// </summary>
     internal sealed class InputHandler
     {
         public enum Modes
@@ -49,7 +52,7 @@ namespace GameOfLife
             Load
         }
 
-        private static readonly Dictionary<Keys, AvailableActions> _keyMap = new Dictionary<Keys, AvailableActions>()
+        private static readonly Dictionary<Keys, AvailableActions> _keyMap = new()
         {
             /* Movements */
             { Keys.Left,  AvailableActions.SelectionMoveLeft},
@@ -77,7 +80,7 @@ namespace GameOfLife
         };
 
         private static readonly RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.IgnoreCase;
-        private static readonly Dictionary<string, (AvailableActions, Regex)> _commandMap = new Dictionary<string, (AvailableActions, Regex)>()
+        private static readonly Dictionary<string, (AvailableActions, Regex)> _commandMap = new()
         {
             { "EXIT",       (AvailableActions.NormalMode,       new Regex(@"^(EXIT)\s*$", regexOptions)) },
             { "PAUSE",      (AvailableActions.Pause,            new Regex(@"^(PAUSE)\s*$", regexOptions)) },
@@ -273,6 +276,5 @@ namespace GameOfLife
                     throw new NotImplementedException("Action " + action + "not implemented");
             }
         }
-
     }
 }

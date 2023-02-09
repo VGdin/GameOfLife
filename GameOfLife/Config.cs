@@ -2,15 +2,17 @@
 
 namespace GameOfLife
 {
+    /// <summary>
+    /// Singleton to hold the configurable variables.
+    /// </summary>
     internal sealed class Config
     {
-        private static readonly Lazy<Config> lazy = new Lazy<Config>(() => new Config());
+        private static readonly Lazy<Config> lazy = new(() => new Config());
         public static Config Instance { get { return lazy.Value; } }
 
         private Config()
         {
         }
-
 
         public readonly (int widht, int height) GameSize = (4000, 4000);
         public readonly float DefaultUpdateRate = (float)1 / 8;
@@ -29,6 +31,6 @@ namespace GameOfLife
         /*  Derived */
         public (int widht, int height) GameResolution => (GameSize.widht * CellSize, GameSize.height * CellSize);
         public (int x, int y, int widht, int height) StatusDimensions => (0, DefaultResolution.height - 100, 400, 100);
-        public (int x, int y, int widht, int height) LogoDimensions => (DefaultResolution.widht-400, DefaultResolution.height - 100, 400, 100);
+        public (int x, int y, int widht, int height) LogoDimensions => (DefaultResolution.widht - 400, DefaultResolution.height - 100, 400, 100);
     }
 }

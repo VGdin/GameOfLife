@@ -5,7 +5,10 @@ using System;
 
 namespace GameOfLife
 {
-    internal sealed class StatusDrawer
+    /// <summary>
+    /// Class to draw the status of the game at the bottom of the screen.
+    /// </summary>
+    internal sealed class DrawerStatus
     {
         private SpriteFont _text;
         private Texture2D _statusBackDrop;
@@ -14,12 +17,11 @@ namespace GameOfLife
         private readonly GameState _gameState;
         private readonly InputHandler _inputHandler;
 
-        public StatusDrawer(GameState gameState, InputHandler inputHandler)
+        public DrawerStatus(GameState gameState, InputHandler inputHandler)
         {
             _gameState = gameState;
             _inputHandler = inputHandler;
         }
-
 
         public void LoadContent(ContentManager content)
         {
@@ -43,22 +45,22 @@ namespace GameOfLife
 
             spriteBatch.DrawString(_text,
                 String.Format("{0,5} | Possible: {1,8} | Cap: {2,8}\n{3}\n{4}\n{6,-6}| {5,-64}",
-                paused, updateRate, updateCap, size, selection, command, mode),
+                Paused, UpdateRate, UpdateCap, Size, Selection, Command, Mode),
                 new Vector2(statusDimensions.x + 10, statusDimensions.y + 10), Color.Black);
         }
 
-        private string paused => _gameState.Paused ? "Pause" : "Play";
-        private string updateRate => String.Format("{0,6:f1}Hz", _gameState.UpdateRate == 0 ? 0 : 1 / _gameState.UpdateRate);
-        private string updateCap => String.Format("{0,6:f1}Hz", _gameState.UpdateCap == 0 ? 0 : 1 / _gameState.UpdateCap);
-        private string size => "Size: " + Config.Instance.GameSize;
-        private string selection => "Sel: " + _gameState.CurrentSelection;
-        private string mode => _inputHandler.CurrentMode switch
+        private string Paused => _gameState.Paused ? "Pause" : "Play";
+        private string UpdateRate => String.Format("{0,6:f1}Hz", _gameState.UpdateRate == 0 ? 0 : 1 / _gameState.UpdateRate);
+        private string UpdateCap => String.Format("{0,6:f1}Hz", _gameState.UpdateCap == 0 ? 0 : 1 / _gameState.UpdateCap);
+        private string Size => "Size: " + Config.Instance.GameSize;
+        private string Selection => "Sel: " + _gameState.CurrentSelection;
+        private string Mode => _inputHandler.CurrentMode switch
         {
             InputHandler.Modes.Normal => "NORMAL",
             InputHandler.Modes.Input => "INPUT",
             InputHandler.Modes.Visual => "VISUAl",
             _ => throw new NotImplementedException("Status drawer not implemented for current mode: " + _inputHandler.CurrentMode)
         };
-        private string command => _inputHandler.CurrentMode == InputHandler.Modes.Input ? _inputHandler.CurrentCommand : "";
+        private string Command => _inputHandler.CurrentMode == InputHandler.Modes.Input ? _inputHandler.CurrentCommand : "";
     }
 }

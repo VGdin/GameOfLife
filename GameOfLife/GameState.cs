@@ -9,28 +9,29 @@ namespace GameOfLife
     {
         Up, Down, Left, Right
     }
+
+    /// <summary>
+    /// Class to keep track of the game and data relating to it, current selection & updaterate etc.
+    /// </summary>
     internal sealed class GameState
     {
-        public (int x, int y) CurrentSelection { get; private set; }
+        public (int x, int y) CurrentSelection { get; private set; } = (Config.Instance.GameSize.widht / 2, Config.Instance.GameSize.height / 2);
         public bool Paused { get; set; } = true;
         public float UpdateRate { get; private set; }
-        public float UpdateCap { get; private set; }
+        public float UpdateCap { get; private set; } = Config.Instance.DefaultUpdateRate;
 
         private readonly IGameOfLife _state;
-        private (int width, int height) Size;
 
         public GameState()
         {
-            Size = (Config.Instance.GameSize.widht, Config.Instance.GameSize.height);
-            _state = GameOfLifeFactory.CreateGameOfLifeOptimized((uint)Config.Instance.GameSize.widht, (uint)Config.Instance.GameSize.height);
+            _state = GameFactory.CreateGameOfLifeOptimized((uint)Config.Instance.GameSize.widht, (uint)Config.Instance.GameSize.height);
             CurrentSelection = ((int)_state.Grid.Width / 2, (int)_state.Grid.Height / 2);
-            UpdateCap = Config.Instance.DefaultUpdateRate;
         }
 
         private double latestUpdate = 0;
-        private Stopwatch _stopwatch = new();
         private int _latest_index = 0;
-        private float[] _latest_times = new float[10];
+        private readonly float[] _latest_times = new float[10];
+        private readonly Stopwatch _stopwatch = new();
         public void Update(GameTime gameTime)
         {
             // Check if enough time has elapsed
@@ -60,6 +61,7 @@ namespace GameOfLife
         {
             _state.Clear();
         }
+
         public void FlipAtSelection()
         {
             bool current = _state.Grid.GetAt((uint)CurrentSelection.x, (uint)CurrentSelection.y);
@@ -77,6 +79,7 @@ namespace GameOfLife
         {
             UpdateCap /= 1.5f;
         }
+
         public void DecreaseUpdateRate()
         {
             UpdateCap *= 1.5f;
@@ -102,22 +105,22 @@ namespace GameOfLife
 
         public void LoadFile(string path)
         {
-            IGameFileReader gameFileReader = GameFileHandlerFactory.CreateFileReader(path);
+            IGameFileReader gameFileReader = FileHandlerFactory.CreateFileReader(path);
             _state.Load(gameFileReader, (uint)CurrentSelection.x, (uint)CurrentSelection.y);
         }
 
         private (int, int) GetNewSelection(SelectionDirection direction) => direction switch
         {
-            SelectionDirection.Up when CurrentSelection.y == 0 => (CurrentSelection.x, Size.height - 1),
+            SelectionDirection.Up when CurrentSelection.y == 0 => (CurrentSelection.x, (int)_state.Grid.Height - 1),
             SelectionDirection.Up => (CurrentSelection.x, CurrentSelection.y - 1),
 
-            SelectionDirection.Down when CurrentSelection.y == Size.height - 1 => (CurrentSelection.x, 0),
+            SelectionDirection.Down when CurrentSelection.y == _state.Grid.Height - 1 => (CurrentSelection.x, 0),
             SelectionDirection.Down => (CurrentSelection.x, CurrentSelection.y + 1),
 
-            SelectionDirection.Right when CurrentSelection.x == Size.width - 1 => (0, CurrentSelection.y),
+            SelectionDirection.Right when CurrentSelection.x == _state.Grid.Width - 1 => (0, CurrentSelection.y),
             SelectionDirection.Right => (CurrentSelection.x + 1, CurrentSelection.y),
 
-            SelectionDirection.Left when CurrentSelection.x == 0 => (Size.width - 1, CurrentSelection.y),
+            SelectionDirection.Left when CurrentSelection.x == 0 => ((int)_state.Grid.Width - 1, CurrentSelection.y),
             SelectionDirection.Left => (CurrentSelection.x - 1, CurrentSelection.y),
             _ => CurrentSelection
         };

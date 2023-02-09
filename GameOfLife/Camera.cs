@@ -11,6 +11,10 @@ namespace GameOfLife
     {
         ZoomIn, ZoomOut, ZoomMax, ZoomMin
     }
+
+    /// <summary>
+    /// Class representing a Camera, responsible for TranslationMatrix being calculated
+    /// </summary>
     internal sealed class Camera
     {
         public Vector2 Position { get; private set; } = new Vector2(Config.Instance.GameResolution.widht / 2, Config.Instance.GameResolution.height / 2);

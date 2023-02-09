@@ -2,11 +2,20 @@
 
 namespace GameOfLife
 {
+    /// <summary>
+    /// Util class to hold static help methods
+    /// </summary>
     internal static class Util
     {
-        public static Vector2 TupleToVector2((int t1, int t2) tuple)
+
+        /// <summary>
+        /// Convert from game coordinates to vector
+        /// </summary>
+        /// <param name="tuple">Coorinates in x and y</param>
+        /// <returns></returns>
+        public static Vector2 TupleToVector2((int x, int y) tuple)
         {
-            return new Vector2(tuple.t1 * Config.Instance.CellSize, tuple.t2 * Config.Instance.CellSize);
+            return new Vector2(tuple.x * Config.Instance.CellSize, tuple.x * Config.Instance.CellSize);
         }
     }
 }
